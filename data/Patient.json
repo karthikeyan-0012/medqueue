@@ -1,0 +1,42 @@
+[
+  {
+    "name": "John Doe",
+    "email": "john@gmail.com",
+    "password": "$2a$10$eFMtWblRiPr3zelrrlsowO0Gj2LgXDumzhNppkO6impw2ThfNwfsS",
+    "age": 32,
+    "gender": "Male",
+    "phone": "+1 555-0201",
+    "_id": "id_ytyh4lqvv",
+    "createdAt": "2026-06-30T17:20:54.989Z"
+  },
+  {
+    "name": "Jane Smith",
+    "email": "jane@gmail.com",
+    "password": "$2a$10$eFMtWblRiPr3zelrrlsowO0Gj2LgXDumzhNppkO6impw2ThfNwfsS",
+    "age": 28,
+    "gender": "Female",
+    "phone": "+1 555-0202",
+    "_id": "id_k9jr65ehc",
+    "createdAt": "2026-06-30T17:20:54.991Z"
+  },
+  {
+    "name": "Mark Taylor",
+    "email": "mark@gmail.com",
+    "password": "$2a$10$eFMtWblRiPr3zelrrlsowO0Gj2LgXDumzhNppkO6impw2ThfNwfsS",
+    "age": 45,
+    "gender": "Male",
+    "phone": "+1 555-0203",
+    "_id": "id_ezwdlgzuj",
+    "createdAt": "2026-06-30T17:20:54.994Z"
+  },
+  {
+    "name": "Emma Watson",
+    "email": "emma@gmail.com",
+    "password": "$2a$10$eFMtWblRiPr3zelrrlsowO0Gj2LgXDumzhNppkO6impw2ThfNwfsS",
+    "age": 24,
+    "gender": "Female",
+    "phone": "+1 555-0204",
+    "_id": "id_8z0zj68vj",
+    "createdAt": "2026-06-30T17:20:54.997Z"
+  }
+]

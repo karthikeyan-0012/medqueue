@@ -1,0 +1,71 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<div class="auth-bg">
+  <div class="auth-card fade-in">
+    <div class="text-center mb-4">
+      <a class="navbar-brand text-gradient d-flex justify-content-center align-items-center mb-2 font-weight-bold" href="/" style="font-size: 1.8rem;">
+        <i class="fa-solid fa-hospital-user me-2 text-primary"></i>
+        <span>MedQueue</span>
+      </a>
+      <h4 class="text-dark font-weight-bold">Create Patient Account</h4>
+      <p class="text-muted small">Register to book online appointments and track queues in real time</p>
+    </div>
+
+    <% if (error) { %>
+      <div class="alert alert-danger alert-dismissible fade show border-0" role="alert" style="border-radius: 12px; font-weight: 500;">
+        <i class="fa-solid fa-circle-exclamation me-2"></i> <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+
+    <form action="/register" method="POST">
+      <div class="mb-3">
+        <label class="form-label text-muted small font-weight-bold">Full Name</label>
+        <input type="text" name="name" class="form-control form-med-control" placeholder="John Doe" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-muted small font-weight-bold">Email Address</label>
+        <input type="email" name="email" class="form-control form-med-control" placeholder="yourname@gmail.com" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label text-muted small font-weight-bold">Password</label>
+        <input type="password" name="password" class="form-control form-med-control" placeholder="••••••••" required>
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label text-muted small font-weight-bold">Age</label>
+          <input type="number" name="age" class="form-control form-med-control" placeholder="25" min="1" max="120" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label text-muted small font-weight-bold">Gender</label>
+          <select name="gender" class="form-select form-med-control" required style="height: 50px;">
+            <option value="" disabled selected>Select</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label text-muted small font-weight-bold">Phone Number</label>
+        <input type="tel" name="phone" class="form-control form-med-control" placeholder="+1 (555) 000-0000" required>
+      </div>
+
+      <button type="submit" class="btn btn-med-primary w-100 py-3 mb-3">
+        Sign Up
+      </button>
+
+      <div class="text-center mt-3">
+        <span class="text-muted small">Already have an account? </span>
+        <a href="/login?role=patient" class="small text-decoration-none font-weight-bold">Login here</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

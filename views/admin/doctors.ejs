@@ -1,0 +1,302 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="portal-container">
+  <!-- Sidebar -->
+  <aside class="portal-sidebar">
+    <div class="text-center mb-4 pb-3 border-bottom">
+      <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold mx-auto mb-2 display-font" style="width: 60px; height: 60px; font-size: 1.5rem;">
+        AD
+      </div>
+      <h6 class="mb-0 text-dark font-weight-bold">System Admin</h6>
+      <small class="text-muted">Command Control</small>
+    </div>
+    
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="/admin/dashboard" class="sidebar-nav-link">
+          <i class="fa-solid fa-chart-pie"></i> Metrics Overview
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/admin/doctors" class="sidebar-nav-link active">
+          <i class="fa-solid fa-user-md"></i> Doctor Directory
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/admin/patients" class="sidebar-nav-link">
+          <i class="fa-solid fa-hospital-user"></i> Patient Directory
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Content -->
+  <main class="portal-content">
+    <div class="container-fluid">
+      
+      <!-- Top header line -->
+      <div class="row mb-4 align-items-center justify-content-between">
+        <div class="col">
+          <h2 class="display-font text-dark mb-1">Doctor Management</h2>
+          <p class="text-muted mb-0">Register specialists, adjust departmental allocations, and audit clinical statuses.</p>
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-med-primary px-4 py-2" data-bs-toggle="modal" data-bs-target="#addDoctorModal">
+            <i class="fa-solid fa-user-plus me-2"></i> Add Doctor
+          </button>
+        </div>
+      </div>
+
+      <% if (success) { %>
+        <div class="alert alert-success alert-dismissible fade show border-0 p-3 mb-4" role="alert" style="border-radius: 12px; font-weight: 500;">
+          <i class="fa-solid fa-circle-check me-2"></i> <%= success %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+
+      <% if (error) { %>
+        <div class="alert alert-danger alert-dismissible fade show border-0 p-3 mb-4" role="alert" style="border-radius: 12px; font-weight: 500;">
+          <i class="fa-solid fa-circle-exclamation me-2"></i> <%= error %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+
+      <!-- Doctor Directory Table -->
+      <div class="med-card">
+        <div class="mb-3 d-flex flex-wrap gap-2 justify-content-between align-items-center">
+          <input type="text" id="doctorSearch" class="form-control form-med-control w-100 w-md-250" placeholder="Search doctor or specialty..." onkeyup="filterDoctors()">
+          <span class="text-muted small">Active Clinical Staff</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table med-table align-middle" id="doctorTable">
+            <thead>
+              <tr>
+                <th>Specialist</th>
+                <th>Department</th>
+                <th>Specialization</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (doctors.length === 0) { %>
+                <tr>
+                  <td colspan="6" class="text-center py-4 text-muted">No doctors found. Add your first clinical record.</td>
+                </tr>
+              <% } else { %>
+                <% doctors.forEach(doc => { %>
+                  <tr>
+                    <td class="font-weight-bold text-dark"><%= doc.name %></td>
+                    <td><%= doc.department %></td>
+                    <td><%= doc.specialization %></td>
+                    <td>
+                      <small class="d-block text-dark font-weight-bold"><%= doc.phone %></small>
+                      <small class="text-muted"><%= doc.email %></small>
+                    </td>
+                    <td>
+                      <% if (doc.status === 'active') { %>
+                        <span class="med-badge med-badge-approved text-uppercase font-weight-bold"><i class="fa-solid fa-circle-check me-1"></i> Active</span>
+                      <% } else { %>
+                        <span class="med-badge med-badge-cancelled text-uppercase font-weight-bold"><i class="fa-solid fa-circle-xmark me-1"></i> Inactive</span>
+                      <% } %>
+                    </td>
+                    <td>
+                      <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-primary border-2 px-3 rounded-3" 
+                          onclick="openEditModal('<%= doc._id %>', '<%= doc.name %>', '<%= doc.email %>', '<%= doc.department %>', '<%= doc.specialization %>', '<%= doc.phone %>', '<%= doc.status %>')">
+                          <i class="fa-solid fa-edit"></i> Edit
+                        </button>
+                        
+                        <form action="/admin/doctors/delete" method="POST" onsubmit="return confirm('Are you sure you want to remove this doctor? This will permanently delete their account and scheduling hours.');">
+                          <input type="hidden" name="doctorId" value="<%= doc._id %>">
+                          <button type="submit" class="btn btn-sm btn-outline-danger border-2 px-3 rounded-3">
+                            <i class="fa-solid fa-trash"></i> Delete
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Modal: Add Doctor -->
+<div class="modal fade" id="addDoctorModal" tabindex="-1" aria-labelledby="addDoctorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+      <div class="modal-header border-bottom bg-light" style="border-radius: 20px 20px 0 0;">
+        <h5 class="modal-title font-weight-bold display-font text-dark" id="addDoctorModalLabel"><i class="fa-solid fa-user-md text-primary me-2"></i> Register Specialist</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/admin/doctors/add" method="POST">
+        <div class="modal-body p-4">
+          <div class="mb-3">
+            <label class="form-label text-muted small font-weight-bold">Full Name</label>
+            <input type="text" name="name" class="form-control form-med-control" placeholder="Dr. Emily Carter" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label text-muted small font-weight-bold">Email Address</label>
+            <input type="email" name="email" class="form-control form-med-control" placeholder="emily.carter@medqueue.com" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label text-muted small font-weight-bold">Account Password</label>
+            <input type="password" name="password" class="form-control form-med-control" placeholder="••••••••" required>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label text-muted small font-weight-bold">Department</label>
+              <select name="department" class="form-select form-med-control" required style="height: 50px;">
+                <option value="" disabled selected>Choose</option>
+                <% departments.forEach(dept => { %>
+                  <option value="<%= dept.name %>"><%= dept.name %></option>
+                <% }) %>
+              </select>
+            </div>
+            
+            <div class="col-md-6">
+              <label class="form-label text-muted small font-weight-bold">Specialization</label>
+              <input type="text" name="specialization" class="form-control form-med-control" placeholder="Cardiologist" required>
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label text-muted small font-weight-bold">Phone Number</label>
+            <input type="tel" name="phone" class="form-control form-med-control" placeholder="+1 555-0101" required>
+          </div>
+        </div>
+        <div class="modal-footer bg-light border-top" style="border-radius: 0 0 20px 20px;">
+          <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 10px;">Cancel</button>
+          <button type="submit" class="btn btn-med-primary px-4">Register Doctor</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Edit Doctor -->
+<div class="modal fade" id="editDoctorModal" tabindex="-1" aria-labelledby="editDoctorModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+      <div class="modal-header border-bottom bg-light" style="border-radius: 20px 20px 0 0;">
+        <h5 class="modal-title font-weight-bold display-font text-dark" id="editDoctorModalLabel"><i class="fa-solid fa-user-edit text-primary me-2"></i> Edit Doctor Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="/admin/doctors/edit" method="POST">
+        <input type="hidden" name="doctorId" id="editDocId">
+        <div class="modal-body p-4">
+          <div class="mb-3">
+            <label class="form-label text-muted small font-weight-bold">Full Name</label>
+            <input type="text" name="name" id="editDocName" class="form-control form-med-control" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label text-muted small font-weight-bold">Email Address</label>
+            <input type="email" name="email" id="editDocEmail" class="form-control form-med-control" required>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label text-muted small font-weight-bold">Department</label>
+              <select name="department" id="editDocDept" class="form-select form-med-control" required style="height: 50px;">
+                <% departments.forEach(dept => { %>
+                  <option value="<%= dept.name %>"><%= dept.name %></option>
+                <% }) %>
+              </select>
+            </div>
+            
+            <div class="col-md-6">
+              <label class="form-label text-muted small font-weight-bold">Specialization</label>
+              <input type="text" name="specialization" id="editDocSpec" class="form-control form-med-control" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-2">
+            <div class="col-md-6">
+              <label class="form-label text-muted small font-weight-bold">Phone Number</label>
+              <input type="tel" name="phone" id="editDocPhone" class="form-control form-med-control" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted small font-weight-bold">Account Status</label>
+              <select name="status" id="editDocStatus" class="form-select form-med-control" required style="height: 50px;">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light border-top" style="border-radius: 0 0 20px 20px;">
+          <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal" style="border-radius: 10px;">Cancel</button>
+          <button type="submit" class="btn btn-med-primary px-4">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  let editModal = null;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    editModal = new bootstrap.Modal(document.getElementById('editDoctorModal'));
+  });
+
+  // Client search
+  function filterDoctors() {
+    const input = document.getElementById('doctorSearch');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('doctorTable');
+    const tr = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < tr.length; i++) {
+      let match = false;
+      const tdName = tr[i].getElementsByTagName('td')[0];
+      const tdDept = tr[i].getElementsByTagName('td')[1];
+      const tdSpec = tr[i].getElementsByTagName('td')[2];
+      
+      if (tdName && tdDept && tdSpec) {
+        if (
+          tdName.textContent.toLowerCase().indexOf(filter) > -1 || 
+          tdDept.textContent.toLowerCase().indexOf(filter) > -1 ||
+          tdSpec.textContent.toLowerCase().indexOf(filter) > -1
+        ) {
+          match = true;
+        }
+      }
+      
+      if (match) {
+        tr[i].style.display = '';
+      } else {
+        if (tr[i].getElementsByTagName('td').length > 1) {
+          tr[i].style.display = 'none';
+        }
+      }
+    }
+  }
+
+  // Pre-fill Edit Modal
+  function openEditModal(id, name, email, department, specialization, phone, status) {
+    document.getElementById('editDocId').value = id;
+    document.getElementById('editDocName').value = name;
+    document.getElementById('editDocEmail').value = email;
+    document.getElementById('editDocDept').value = department;
+    document.getElementById('editDocSpec').value = specialization;
+    document.getElementById('editDocPhone').value = phone;
+    document.getElementById('editDocStatus').value = status;
+    editModal.show();
+  }
+</script>
+
+<%- include('../partials/footer') %>

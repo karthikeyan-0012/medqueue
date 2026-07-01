@@ -1,0 +1,127 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="portal-container">
+  <!-- Sidebar -->
+  <aside class="portal-sidebar">
+    <div class="text-center mb-4 pb-3 border-bottom">
+      <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold mx-auto mb-2 display-font" style="width: 60px; height: 60px; font-size: 1.5rem;">
+        Dr.
+      </div>
+      <h6 class="mb-0 text-dark font-weight-bold"><%= doctor.name %></h6>
+      <small class="text-muted"><%= doctor.specialization %></small>
+    </div>
+    
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="/doctor/dashboard" class="sidebar-nav-link">
+          <i class="fa-solid fa-house-medical"></i> Queue Dashboard
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/doctor/schedule" class="sidebar-nav-link active">
+          <i class="fa-solid fa-clock"></i> Schedule Planner
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/doctor/history" class="sidebar-nav-link">
+          <i class="fa-solid fa-file-medical"></i> Consultation History
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Content -->
+  <main class="portal-content">
+    <div class="container-fluid">
+      <div class="row mb-4">
+        <div class="col">
+          <h2 class="display-font text-dark mb-1">Availability Planner</h2>
+          <p class="text-muted mb-0">Configure your clinical consultation hours, slot durations, and recurring breaks.</p>
+        </div>
+      </div>
+
+      <% if (success) { %>
+        <div class="alert alert-success alert-dismissible fade show border-0 p-3 mb-4" role="alert" style="border-radius: 12px; font-weight: 500;">
+          <i class="fa-solid fa-circle-check me-2"></i> <%= success %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="med-card shadow-sm p-4">
+            <form action="/doctor/schedule" method="POST">
+              
+              <!-- Active Days Select -->
+              <div class="mb-4">
+                <label class="form-label text-muted small font-weight-bold d-block mb-3">
+                  <i class="fa-solid fa-calendar-days text-primary me-2"></i> Consulting Workdays
+                </label>
+                <div class="row g-3">
+                  <% const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; %>
+                  <% days.forEach(day => { %>
+                    <div class="col-6 col-md-3">
+                      <div class="border rounded-3 p-3 bg-light d-flex align-items-center">
+                        <input type="checkbox" name="workingDays" value="<%= day %>" id="day_<%= day %>" class="form-check-input me-3 border-secondary" <%= doctor.workingDays.includes(day) ? 'checked' : '' %>>
+                        <label for="day_<%= day %>" class="form-check-label text-dark font-weight-bold select-none cursor-pointer"><%= day %></label>
+                      </div>
+                    </div>
+                  <% }) %>
+                </div>
+              </div>
+
+              <div class="row g-4 mb-4">
+                <!-- Start Time -->
+                <div class="col-md-6">
+                  <label class="form-label text-muted small font-weight-bold"><i class="fa-solid fa-clock text-primary me-2"></i> Shift Start Time</label>
+                  <input type="time" name="startTime" class="form-control form-med-control" value="<%= doctor.startTime %>" required>
+                </div>
+                
+                <!-- End Time -->
+                <div class="col-md-6">
+                  <label class="form-label text-muted small font-weight-bold"><i class="fa-solid fa-clock text-primary me-2"></i> Shift End Time</label>
+                  <input type="time" name="endTime" class="form-control form-med-control" value="<%= doctor.endTime %>" required>
+                </div>
+              </div>
+
+              <div class="row g-4 mb-4">
+                <!-- Slot Duration -->
+                <div class="col-md-4">
+                  <label class="form-label text-muted small font-weight-bold"><i class="fa-solid fa-stopwatch text-primary me-2"></i> Slot Duration (Minutes)</label>
+                  <select name="slotDuration" class="form-select form-med-control" required style="height: 50px;">
+                    <option value="10" <%= doctor.slotDuration === 10 ? 'selected' : '' %>>10 Mins</option>
+                    <option value="15" <%= doctor.slotDuration === 15 ? 'selected' : '' %>>15 Mins</option>
+                    <option value="20" <%= doctor.slotDuration === 20 ? 'selected' : '' %>>20 Mins</option>
+                    <option value="30" <%= doctor.slotDuration === 30 ? 'selected' : '' %>>30 Mins</option>
+                    <option value="45" <%= doctor.slotDuration === 45 ? 'selected' : '' %>>45 Mins</option>
+                  </select>
+                </div>
+
+                <!-- Break Start -->
+                <div class="col-md-4">
+                  <label class="form-label text-muted small font-weight-bold"><i class="fa-solid fa-mug-hot text-primary me-2"></i> Break Start Time</label>
+                  <input type="time" name="breakStartTime" class="form-control form-med-control" value="<%= doctor.breakStartTime %>" required>
+                </div>
+
+                <!-- Break End -->
+                <div class="col-md-4">
+                  <label class="form-label text-muted small font-weight-bold"><i class="fa-solid fa-mug-hot text-primary me-2"></i> Break End Time</label>
+                  <input type="time" name="breakEndTime" class="form-control form-med-control" value="<%= doctor.breakEndTime %>" required>
+                </div>
+              </div>
+
+              <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-med-primary py-3">
+                  <i class="fa-solid fa-save me-2"></i> Save Schedule Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>

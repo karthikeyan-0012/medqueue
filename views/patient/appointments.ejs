@@ -1,0 +1,198 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="portal-container">
+  <!-- Sidebar -->
+  <aside class="portal-sidebar">
+    <div class="text-center mb-4 pb-3 border-bottom">
+      <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold mx-auto mb-2 display-font" style="width: 60px; height: 60px; font-size: 1.5rem;">
+        <%= user.name.split(' ').map(n => n[0]).join('') %>
+      </div>
+      <h6 class="mb-0 text-dark font-weight-bold"><%= user.name %></h6>
+      <small class="text-muted"><%= user.email %></small>
+    </div>
+    
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="/patient/dashboard" class="sidebar-nav-link">
+          <i class="fa-solid fa-gauge"></i> Dashboard
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/patient/book" class="sidebar-nav-link">
+          <i class="fa-solid fa-calendar-plus"></i> Book Slot
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/patient/appointments" class="sidebar-nav-link active">
+          <i class="fa-solid fa-clock-history"></i> Appointments
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Content -->
+  <main class="portal-content">
+    <div class="container-fluid">
+      <div class="row mb-4">
+        <div class="col">
+          <h2 class="display-font text-dark mb-1">My Consultations</h2>
+          <p class="text-muted mb-0">Track active tokens, view upcoming bookings, or review your historical clinic visits.</p>
+        </div>
+      </div>
+
+      <% if (success) { %>
+        <div class="alert alert-success alert-dismissible fade show border-0 p-3 mb-4" role="alert" style="border-radius: 12px; font-weight: 500;">
+          <i class="fa-solid fa-circle-check me-2"></i> <%= success %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% } %>
+
+      <!-- Section 1: Upcoming/Active Appointments -->
+      <div class="med-card mb-5">
+        <h4 class="text-dark font-weight-bold display-font border-bottom pb-3 mb-4"><i class="fa-solid fa-hourglass-start text-primary me-2"></i> Upcoming Consultations</h4>
+        
+        <% if (upcoming.length === 0) { %>
+          <div class="text-center py-4 text-muted">
+            <i class="fa-solid fa-calendar-xmark fs-2 mb-2 d-block text-muted-subtle"></i>
+            No upcoming consultations. Book a slot to schedule a doctor visit.
+          </div>
+        <% } else { %>
+          <div class="row g-4">
+            <% upcoming.forEach(appt => { %>
+              <div class="col-md-6 col-xl-4">
+                <div class="border rounded-4 p-3 bg-light shadow-sm position-relative">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-primary-light text-primary font-weight-bold py-2 px-3 rounded-pill">Token T-<%= appt.tokenNumber.toString().padStart(2, '0') %></span>
+                    <span class="med-badge med-badge-<%= appt.status %> text-uppercase small"><%= appt.status %></span>
+                  </div>
+                  
+                  <h5 class="text-dark font-weight-bold mb-1"><%= appt.doctorName %></h5>
+                  <small class="text-muted font-weight-bold d-block mb-3"><i class="fa-solid fa-tag me-1 text-primary"></i> <%= appt.department %></small>
+                  
+                  <div class="row g-2 border-top border-bottom py-2 mb-3">
+                    <div class="col-6">
+                      <small class="text-muted small d-block">DATE</small>
+                      <strong class="text-dark"><%= appt.date %></strong>
+                    </div>
+                    <div class="col-6">
+                      <small class="text-muted small d-block">TIME SLOT</small>
+                      <strong class="text-dark"><%= appt.timeSlot %></strong>
+                    </div>
+                  </div>
+
+                  <form action="/patient/cancel" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking? This will remove you from the queue state.');">
+                    <input type="hidden" name="appointmentId" value="<%= appt._id %>">
+                    <button type="submit" class="btn btn-outline-danger w-100 py-2 border-2" style="border-radius: 10px; font-weight: 600;">
+                      <i class="fa-solid fa-calendar-xmark me-2"></i> Cancel Reservation
+                    </button>
+                  </form>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Section 2: Historical/Previous Visited List -->
+      <div class="med-card">
+        <h4 class="text-dark font-weight-bold display-font border-bottom pb-3 mb-4"><i class="fa-solid fa-clock-history text-primary me-2"></i> Consultation History</h4>
+        
+        <div class="mb-3 d-flex flex-wrap gap-2 justify-content-between align-items-center">
+          <input type="text" id="historySearch" class="form-control form-med-control w-100 w-md-250" placeholder="Search doctor or dept..." onkeyup="filterHistory()">
+          <span class="text-muted small">Showing previous visits</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table med-table align-middle" id="historyTable">
+            <thead>
+              <tr>
+                <th>Doctor</th>
+                <th>Department</th>
+                <th>Date</th>
+                <th>Time Slot</th>
+                <th>Token</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (history.length === 0) { %>
+                <tr>
+                  <td colspan="6" class="text-center py-4 text-muted">
+                    No past records found.
+                  </td>
+                </tr>
+              <% } else { %>
+                <% history.forEach(appt => { %>
+                  <tr>
+                    <td class="font-weight-bold text-dark"><%= appt.doctorName %></td>
+                    <td><%= appt.department %></td>
+                    <td><%= appt.date %></td>
+                    <td><%= appt.timeSlot %></td>
+                    <td><span class="badge bg-secondary-subtle text-secondary-emphasis">T-<%= appt.tokenNumber.toString().padStart(2, '0') %></span></td>
+                    <td>
+                      <span class="med-badge med-badge-<%= appt.status %>"><%= appt.status %></span>
+                      <% if (appt.status === 'rejected' && appt.rejectionReason) { %>
+                        <i class="fa-solid fa-info-circle text-muted ms-1" data-bs-toggle="tooltip" title="<%= appt.rejectionReason %>" style="cursor: pointer;"></i>
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Bootstrap tooltips activation
+  document.addEventListener('DOMContentLoaded', () => {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
+
+  // Client side search filtering for history
+  function filterHistory() {
+    const input = document.getElementById('historySearch');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('historyTable');
+    const tr = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < tr.length; i++) {
+      let match = false;
+      const tdDoctor = tr[i].getElementsByTagName('td')[0];
+      const tdDept = tr[i].getElementsByTagName('td')[1];
+      const tdStatus = tr[i].getElementsByTagName('td')[5];
+      
+      if (tdDoctor && tdDept) {
+        const textDoc = tdDoctor.textContent || tdDoctor.innerText;
+        const textDept = tdDept.textContent || tdDept.innerText;
+        const textStatus = tdStatus ? (tdStatus.textContent || tdStatus.innerText) : '';
+        
+        if (
+          textDoc.toLowerCase().indexOf(filter) > -1 || 
+          textDept.toLowerCase().indexOf(filter) > -1 ||
+          textStatus.toLowerCase().indexOf(filter) > -1
+        ) {
+          match = true;
+        }
+      }
+      
+      if (match) {
+        tr[i].style.display = '';
+      } else {
+        // Exclude header or empty message row from broken styling
+        if (tr[i].getElementsByTagName('td').length > 1) {
+          tr[i].style.display = 'none';
+        }
+      }
+    }
+  }
+</script>
+
+<%- include('../partials/footer') %>

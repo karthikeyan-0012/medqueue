@@ -1,0 +1,20 @@
+{
+  "name": "medqueue",
+  "version": "1.0.0",
+  "description": "Smart Hospital Queue & Appointment Management System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node config/seed.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "ejs": "^3.1.9",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "mongoose": "^8.2.1",
+    "socket.io": "^4.7.4"
+  },
+  "author": "Engineering Student",
+  "license": "ISC"
+}

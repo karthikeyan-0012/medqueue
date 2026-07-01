@@ -1,0 +1,120 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<div class="auth-bg">
+  <div class="auth-card fade-in">
+    <div class="text-center mb-4">
+      <a class="navbar-brand text-gradient d-flex justify-content-center align-items-center mb-2 font-weight-bold" href="/" style="font-size: 1.8rem;">
+        <i class="fa-solid fa-hospital-user me-2 text-primary"></i>
+        <span>MedQueue</span>
+      </a>
+      <h4 class="text-dark font-weight-bold" id="loginHeader">Patient Login Portal</h4>
+      <p class="text-muted small">Enter your credentials to access your dashboard</p>
+    </div>
+
+    <% if (error) { %>
+      <div class="alert alert-danger alert-dismissible fade show border-0" role="alert" style="border-radius: 12px; font-weight: 500;">
+        <i class="fa-solid fa-circle-exclamation me-2"></i> <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+
+    <% if (success) { %>
+      <div class="alert alert-success alert-dismissible fade show border-0" role="alert" style="border-radius: 12px; font-weight: 500;">
+        <i class="fa-solid fa-circle-check me-2"></i> <%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    <% } %>
+
+    <div class="role-tab-container">
+      <div class="role-tab <%= role === 'patient' ? 'active' : '' %>" onclick="switchRole('patient')">
+        <i class="fa-solid fa-user me-1"></i> Patient
+      </div>
+      <div class="role-tab <%= role === 'doctor' ? 'active' : '' %>" onclick="switchRole('doctor')">
+        <i class="fa-solid fa-stethoscope me-1"></i> Doctor
+      </div>
+      <div class="role-tab <%= role === 'admin' ? 'active' : '' %>" onclick="switchRole('admin')">
+        <i class="fa-solid fa-user-shield me-1"></i> Admin
+      </div>
+    </div>
+
+    <form action="/login" method="POST" id="loginForm">
+      <input type="hidden" name="role" id="roleInput" value="<%= role %>">
+      
+      <div class="mb-3">
+        <label class="form-label text-muted small font-weight-bold">Email Address</label>
+        <div class="input-group">
+          <span class="input-group-text border-end-0 bg-white" style="border-radius: 12px 0 0 12px; border-color: var(--border-color);"><i class="fa-solid fa-envelope text-muted"></i></span>
+          <input type="email" name="email" class="form-control form-med-control border-start-0 ps-0" placeholder="yourname@gmail.com" required style="border-radius: 0 12px 12px 0;">
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <div class="d-flex justify-content-between">
+          <label class="form-label text-muted small font-weight-bold">Password</label>
+          <a href="#" class="small text-decoration-none">Forgot?</a>
+        </div>
+        <div class="input-group">
+          <span class="input-group-text border-end-0 bg-white" style="border-radius: 12px 0 0 12px; border-color: var(--border-color);"><i class="fa-solid fa-lock text-muted"></i></span>
+          <input type="password" name="password" class="form-control form-med-control border-start-0 ps-0" placeholder="••••••••" required style="border-radius: 0 12px 12px 0;">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-med-primary w-100 py-3 mb-3" id="submitBtn">
+        Access Portal
+      </button>
+
+      <div class="text-center mt-3" id="signupPrompt">
+        <span class="text-muted small">New to MedQueue? </span>
+        <a href="/register" class="small text-decoration-none font-weight-bold">Create a Patient Account</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function switchRole(role) {
+    // Update active tab class
+    document.querySelectorAll('.role-tab').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    event.currentTarget.classList.add('active');
+
+    // Update input and heading text
+    document.getElementById('roleInput').value = role;
+    
+    const header = document.getElementById('loginHeader');
+    const signupPrompt = document.getElementById('signupPrompt');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Customize page colors and tags dynamically
+    if (role === 'patient') {
+      header.textContent = 'Patient Login Portal';
+      signupPrompt.style.display = 'block';
+      submitBtn.style.background = 'var(--primary)';
+      submitBtn.style.boxShadow = '0 4px 14px 0 rgba(37, 99, 235, 0.3)';
+    } else if (role === 'doctor') {
+      header.textContent = 'Doctor Queue Management';
+      signupPrompt.style.display = 'none';
+      submitBtn.style.background = 'var(--success)';
+      submitBtn.style.boxShadow = '0 4px 14px 0 rgba(16, 185, 129, 0.3)';
+    } else if (role === 'admin') {
+      header.textContent = 'Admin Command Center';
+      signupPrompt.style.display = 'none';
+      submitBtn.style.background = 'var(--danger)';
+      submitBtn.style.boxShadow = '0 4px 14px 0 rgba(239, 68, 68, 0.3)';
+    }
+  }
+
+  // Run on load in case role is pre-defined
+  window.onload = function() {
+    const activeRole = document.getElementById('roleInput').value;
+    const tabIndex = activeRole === 'patient' ? 0 : activeRole === 'doctor' ? 1 : 2;
+    const targetTab = document.querySelectorAll('.role-tab')[tabIndex];
+    if (targetTab) {
+      targetTab.click();
+    }
+  }
+</script>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,429 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-shape-1"></div>
+  <div class="hero-shape-2"></div>
+  <div class="container position-relative" style="z-index: 10;">
+    <div class="row align-items-center min-vh-75 pt-5">
+      <div class="col-lg-6 slide-up">
+        <span class="badge bg-primary-light text-primary px-3 py-2 rounded-pill font-weight-bold mb-3">
+          <i class="fa-solid fa-bolt me-1"></i> Next-Gen Smart Queue Management
+        </span>
+        <h1 class="hero-title text-gradient">Skip the Waiting Room, Not Your Care.</h1>
+        <p class="lead text-muted mb-4 fs-5" style="max-width: 550px;">
+          MedQueue revolutionizes hospital waiting rooms. Book verified appointments, check live queue positions in real-time, and walk in exactly when the doctor is ready for you.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <% if (!user) { %>
+            <a href="/login?role=patient" class="btn btn-med-primary px-4 py-3">
+              <i class="fa-solid fa-calendar-check me-2"></i> Book Appointment Now
+            </a>
+            <a href="/register" class="btn btn-med-secondary px-4 py-3">
+              <i class="fa-solid fa-user-plus me-2"></i> Patient Signup
+            </a>
+          <% } else { %>
+            <a href="/<%= user.role %>/dashboard" class="btn btn-med-primary px-4 py-3">
+              <i class="fa-solid fa-gauge me-2"></i> Go to Dashboard
+            </a>
+          <% } %>
+        </div>
+      </div>
+      <div class="col-lg-6 mt-5 mt-lg-0 text-center fade-in">
+        <div class="position-relative d-inline-block">
+          <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=600&q=80" alt="Smart Hospital Dashboard" class="img-fluid rounded-4 shadow-lg border border-white border-4" style="max-width: 90%;">
+          
+          <!-- Floating UI Cards for Premium Look -->
+          <div class="med-card position-absolute d-none d-md-flex align-items-center bg-white p-3 shadow-lg border border-light" style="bottom: 20px; left: -40px; border-radius: 16px; width: 250px;">
+            <div class="med-card-icon bg-success-light text-success me-3 mb-0" style="width: 40px; height: 40px; border-radius: 10px; font-size: 1.1rem;">
+              <i class="fa-solid fa-check-circle"></i>
+            </div>
+            <div>
+              <h6 class="mb-0 text-dark font-weight-bold">Live Status</h6>
+              <small class="text-success font-weight-bold"><i class="fa-solid fa-circle-play me-1"></i> Doctor is Ready</small>
+            </div>
+          </div>
+          
+          <div class="med-card position-absolute d-none d-md-flex align-items-center bg-white p-3 shadow-lg border border-light" style="top: 40px; right: -30px; border-radius: 16px; width: 220px;">
+            <div class="med-card-icon bg-warning-light text-warning me-3 mb-0" style="width: 40px; height: 40px; border-radius: 10px; font-size: 1.1rem;">
+              <i class="fa-solid fa-clock"></i>
+            </div>
+            <div>
+              <h6 class="mb-0 text-dark font-weight-bold">Token T-04</h6>
+              <small class="text-muted">Wait time: ~ 12 mins</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Counters Section -->
+<section class="py-5 bg-white border-bottom border-top">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-6 col-lg-3">
+        <div class="counter-box">
+          <div class="counter-number">15k+</div>
+          <p class="text-muted font-weight-bold mb-0">Patients Served</p>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="counter-box">
+          <div class="counter-number">50+</div>
+          <p class="text-muted font-weight-bold mb-0">Top Specialists</p>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="counter-box">
+          <div class="counter-number"><5 min</div>
+          <p class="text-muted font-weight-bold mb-0">Avg. Waiting Time</p>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="counter-box">
+          <div class="counter-number">99.8%</div>
+          <p class="text-muted font-weight-bold mb-0">On-Time Reviews</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services / Offerings -->
+<section id="services" class="py-5 section-offset" style="background: #f8fafc;">
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <span class="text-primary font-weight-bold text-uppercase letter-spacing-1">Premium Services</span>
+      <h2 class="h1 display-font text-dark mt-2 mb-3">Redefining Patient Journeys</h2>
+      <p class="text-muted mx-auto" style="max-width: 600px;">Our workflow replaces long lines with digital transparency, empowering patients and optimize doctor scheduling.</p>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="med-card h-100">
+          <div class="med-card-icon">
+            <i class="fa-solid fa-calendar-days"></i>
+          </div>
+          <h4 class="mb-3">OPD Slot Booking</h4>
+          <p class="text-muted">Select departments, review real-time availability calendar, choose timeslots, and secure bookings in under 60 seconds.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="med-card h-100">
+          <div class="med-card-icon" style="background: var(--secondary-light); color: var(--secondary);">
+            <i class="fa-solid fa-qrcode"></i>
+          </div>
+          <h4 class="mb-3">Live Digital Tokens</h4>
+          <p class="text-muted">Generate instant digital tokens. No printouts needed—your live dashboard displays queue status and estimated wait times on the fly.</p>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="med-card h-100">
+          <div class="med-card-icon" style="background: var(--success-light); color: var(--success);">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <h4 class="mb-3">Emergency Priority</h4>
+          <p class="text-muted">Critical emergency patients are elevated to the front of the queue by staff. Wait times for subsequent patients adjust instantly.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Why Choose Us / Detailed Feature Grid -->
+<section id="features" class="py-5 bg-white">
+  <div class="container py-4">
+    <div class="row align-items-center">
+      <div class="col-lg-5 mb-5 mb-lg-0">
+        <span class="text-primary font-weight-bold text-uppercase">The MedQueue Advantage</span>
+        <h2 class="h1 display-font mt-2 mb-4">Why Hospitals Choose MedQueue</h2>
+        <p class="text-muted mb-4">
+          Typical hospital queue systems rely on static booking sheets or paper numbers. MedQueue utilizes active websockets to synchronize queues across devices instantly, preventing crowded lobbies and improving hospital reputation.
+        </p>
+        <ul class="list-unstyled">
+          <li class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-circle-check text-success me-3 fs-5"></i>
+            <strong class="text-dark">Socket.IO real-time updates</strong>
+          </li>
+          <li class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-circle-check text-success me-3 fs-5"></i>
+            <strong class="text-dark">Flexible doctor schedule planners</strong>
+          </li>
+          <li class="d-flex align-items-center mb-3">
+            <i class="fa-solid fa-circle-check text-success me-3 fs-5"></i>
+            <strong class="text-dark">Admin dashboard analytics (Chart.js)</strong>
+          </li>
+          <li class="d-flex align-items-center">
+            <i class="fa-solid fa-circle-check text-success me-3 fs-5"></i>
+            <strong class="text-dark">Fully responsive Bootstrap 5 interface</strong>
+          </li>
+        </ul>
+      </div>
+      <div class="col-lg-7">
+        <div class="row g-4 ps-lg-5">
+          <div class="col-sm-6">
+            <div class="med-card">
+              <h5 class="text-dark font-weight-bold mb-2"><i class="fa-solid fa-user-shield text-primary me-2"></i> Role Dashboards</h5>
+              <p class="text-muted mb-0 small">Specialized interfaces for Patient booking, Doctor queue calling, and Admin operations management.</p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="med-card">
+              <h5 class="text-dark font-weight-bold mb-2"><i class="fa-solid fa-gauge-high text-primary me-2"></i> Wait Estimations</h5>
+              <p class="text-muted mb-0 small">Smart algorithm recalculates wait times dynamically based on average duration, completed reviews, and break schedules.</p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="med-card">
+              <h5 class="text-dark font-weight-bold mb-2"><i class="fa-solid fa-chart-line text-primary me-2"></i> Advanced Metrics</h5>
+              <p class="text-muted mb-0 small">Admin panel displays queue lengths, patient volumes, daily trends, and doctor workloads using interactive charts.</p>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="med-card">
+              <h5 class="text-dark font-weight-bold mb-2"><i class="fa-solid fa-handshake-angle text-primary me-2"></i> Doctor Autonomy</h5>
+              <p class="text-muted mb-0 small">Doctors can accept or reject bookings with reasons, schedule breaks, skip absent patients, or call next with one tap.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Departments Section -->
+<section id="departments" class="py-5" style="background: #f8fafc;">
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <span class="text-primary font-weight-bold text-uppercase">Specialties</span>
+      <h2 class="h1 display-font text-dark mt-2 mb-3">Our Clinical Departments</h2>
+      <p class="text-muted mx-auto" style="max-width: 600px;">Direct access to experienced healthcare professionals across diverse fields of medicine.</p>
+    </div>
+    
+    <div class="row g-4 justify-content-center">
+      <% departments.forEach(dept => { %>
+        <div class="col-md-4 col-sm-6">
+          <div class="med-card text-center h-100 d-flex flex-column align-items-center">
+            <div class="med-card-icon mx-auto">
+              <i class="fa-solid <%= dept.icon || 'fa-user-md' %>"></i>
+            </div>
+            <h4 class="mb-2"><%= dept.name %></h4>
+            <p class="text-muted mb-0 small"><%= dept.description %></p>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 bg-white">
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <span class="text-primary font-weight-bold text-uppercase">Feedback</span>
+      <h2 class="h1 display-font text-dark mt-2 mb-3">What Our Patients Say</h2>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="med-card border border-light bg-light h-100 p-4">
+          <div class="text-warning mb-3">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          </div>
+          <p class="text-dark italic">"MedQueue has saved me hours of sitting in crowded waiting rooms. I could see exactly when Dr. Carter was on token 4 and left home accordingly!"</p>
+          <div class="d-flex align-items-center mt-4">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold me-3" style="width: 44px; height: 44px;">
+              SM
+            </div>
+            <div>
+              <h6 class="mb-0 text-dark font-weight-bold">Sarah Miller</h6>
+              <small class="text-muted">Pediatric Patient</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="med-card border border-light bg-light h-100 p-4">
+          <div class="text-warning mb-3">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          </div>
+          <p class="text-dark italic">"As a busy professional, time is critical. The live wait estimations are incredibly accurate, and the digital token updates in real time without lag."</p>
+          <div class="d-flex align-items-center mt-4">
+            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold me-3" style="width: 44px; height: 44px;">
+              DB
+            </div>
+            <div>
+              <h6 class="mb-0 text-dark font-weight-bold">David Brown</h6>
+              <small class="text-muted">Cardiac Patient</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="med-card border border-light bg-light h-100 p-4">
+          <div class="text-warning mb-3">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          </div>
+          <p class="text-dark italic">"Excellent platform. Simple, modern, and highly intuitive. The doctor interface is exceptionally fast and lets us prioritize emergency visits instantly."</p>
+          <div class="d-flex align-items-center mt-4">
+            <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold me-3" style="width: 44px; height: 44px;">
+              RC
+            </div>
+            <div>
+              <h6 class="mb-0 text-dark font-weight-bold">Dr. Robert Chen</h6>
+              <small class="text-muted">Family Physician</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section id="faq" class="py-5" style="background: #f8fafc;">
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <span class="text-primary font-weight-bold text-uppercase">FAQ</span>
+      <h2 class="h1 display-font text-dark mt-2 mb-3">Frequently Asked Questions</h2>
+    </div>
+    
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="accordion accordion-flush bg-white rounded-4 shadow-sm p-3" id="accordionFAQ">
+          
+          <div class="accordion-item border-0 border-bottom">
+            <h2 class="accordion-header" id="headingOne">
+              <button class="accordion-button collapsed font-weight-bold py-3 text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                How does the real-time queue position update work?
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionFAQ">
+              <div class="accordion-body text-muted">
+                Our application integrates Socket.IO websockets. As soon as the doctor calls the next token, skipped tokens, or complete consultations, an event is emitted from the backend and immediately updates your queue position and waiting time estimation on your device without needing a page refresh.
+              </div>
+            </div>
+          </div>
+          
+          <div class="accordion-item border-0 border-bottom">
+            <h2 class="accordion-header" id="headingTwo">
+              <button class="accordion-button collapsed font-weight-bold py-3 text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                How are the waiting times estimated?
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionFAQ">
+              <div class="accordion-body text-muted">
+                Waiting times are calculated by multiplying the number of people ahead of you in the active queue list by the doctor's average consultation duration (e.g. 15 mins). If a doctor pauses the queue for a scheduled break, the system flags the delay on your dashboard.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item border-0">
+            <h2 class="accordion-header" id="headingThree">
+              <button class="accordion-button collapsed font-weight-bold py-3 text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                Can I reschedule or cancel my appointment?
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionFAQ">
+              <div class="accordion-body text-muted">
+                Yes! From the "My Appointments" panel in your patient portal, you can cancel any upcoming booking instantly. The backend will remove you from the queue state automatically, reducing the wait time for all subsequent patients.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-5 bg-white">
+  <div class="container py-4">
+    <div class="text-center mb-5">
+      <span class="text-primary font-weight-bold text-uppercase">Contact</span>
+      <h2 class="h1 display-font text-dark mt-2 mb-3">Get in Touch</h2>
+    </div>
+    
+    <div class="row align-items-stretch g-4">
+      <div class="col-lg-5">
+        <div class="med-card bg-primary text-white h-100 p-5 d-flex flex-column justify-content-between" style="border: none;">
+          <div>
+            <h3 class="text-white mb-4 display-font">Emergency Support</h3>
+            <p class="text-white-50">Our hospital care coordinators are available 24/7 to assist with queue management inquiries, scheduling, or technical support.</p>
+            
+            <div class="mt-4">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-phone me-3 text-white fs-5"></i>
+                <span>+1 (800) MED-QUEUE</span>
+              </div>
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-envelope me-3 text-white fs-5"></i>
+                <span>support@medqueue.com</span>
+              </div>
+              <div class="d-flex align-items-center">
+                <i class="fa-solid fa-location-dot me-3 text-white fs-5"></i>
+                <span>100 Health Sciences Pkwy, Suite 400</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-5 text-white-50 small border-top pt-3 border-white-10">
+            © 2026 MedQueue Inc. All rights reserved.
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-7">
+        <div class="med-card h-100 p-5">
+          <h3 class="text-dark mb-4 display-font">Send a Message</h3>
+          <form>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted small font-weight-bold">Your Name</label>
+                <input type="text" class="form-control form-med-control" placeholder="John Doe" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted small font-weight-bold">Email Address</label>
+                <input type="email" class="form-control form-med-control" placeholder="john@example.com" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label text-muted small font-weight-bold">Subject</label>
+                <input type="text" class="form-control form-med-control" placeholder="Hospital Queue Setup Inquiry" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label text-muted small font-weight-bold">Message</label>
+                <textarea class="form-control form-med-control" rows="4" placeholder="How can we help you?" required></textarea>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn btn-med-primary px-4 py-3 w-100">Send Message</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-4 border-top bg-light">
+  <div class="container text-center">
+    <div class="d-flex justify-content-center align-items-center mb-3">
+      <a class="navbar-brand text-gradient d-flex align-items-center font-weight-bold" href="#">
+        <i class="fa-solid fa-hospital-user me-2 text-primary"></i>
+        <span>MedQueue</span>
+      </a>
+    </div>
+    <p class="text-muted small mb-0">Designed & engineered as a high-fidelity healthcare project. Built using Express, MongoDB and Socket.IO.</p>
+  </div>
+</footer>
+
+<%- include('partials/footer') %>

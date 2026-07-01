@@ -1,0 +1,207 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="portal-container">
+  <!-- Sidebar -->
+  <aside class="portal-sidebar">
+    <div class="text-center mb-4 pb-3 border-bottom">
+      <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold mx-auto mb-2 display-font" style="width: 60px; height: 60px; font-size: 1.5rem;">
+        <%= user.name.split(' ').map(n => n[0]).join('') %>
+      </div>
+      <h6 class="mb-0 text-dark font-weight-bold"><%= user.name %></h6>
+      <small class="text-muted"><%= user.email %></small>
+    </div>
+    
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="/patient/dashboard" class="sidebar-nav-link">
+          <i class="fa-solid fa-gauge"></i> Dashboard
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/patient/book" class="sidebar-nav-link active">
+          <i class="fa-solid fa-calendar-plus"></i> Book Slot
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/patient/appointments" class="sidebar-nav-link">
+          <i class="fa-solid fa-clock-history"></i> Appointments
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Content -->
+  <main class="portal-content">
+    <div class="container-fluid">
+      <div class="row mb-4">
+        <div class="col">
+          <h2 class="display-font text-dark mb-1">Book a Consultation</h2>
+          <p class="text-muted mb-0">Select your medical department, preferred specialist, and choose an available consultation slot.</p>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="med-card shadow-sm p-4">
+            <form action="/patient/book" method="POST" id="bookingForm">
+              
+              <!-- Step 1: Select Department -->
+              <div class="mb-4">
+                <label class="form-label text-muted small font-weight-bold"><i class="fa-solid fa-hospital text-primary me-2"></i> Medical Department</label>
+                <select name="department" id="deptSelect" class="form-select form-med-control" required style="height: 50px;">
+                  <option value="" disabled selected>Choose Department</option>
+                  <% departments.forEach(dept => { %>
+                    <option value="<%= dept.name %>"><%= dept.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+
+              <!-- Step 2: Select Doctor -->
+              <div class="mb-4">
+                <label class="form-label text-muted small font-weight-bold"><i class="fa-solid fa-user-md text-primary me-2"></i> Consultation Specialist</label>
+                <select name="doctorId" id="docSelect" class="form-select form-med-control" required disabled style="height: 50px;">
+                  <option value="" disabled selected>Choose department first</option>
+                </select>
+              </div>
+
+              <!-- Step 3: Pick Date -->
+              <div class="mb-4">
+                <label class="form-label text-muted small font-weight-bold"><i class="fa-solid fa-calendar text-primary me-2"></i> Date of Appointment</label>
+                <input type="date" name="date" id="dateInput" class="form-control form-med-control" required disabled min="<%= new Date().toISOString().split('T')[0] %>">
+              </div>
+
+              <!-- Slot Availability Visualizer -->
+              <div class="mb-4 d-none" id="slotContainer">
+                <label class="form-label text-muted small font-weight-bold d-block"><i class="fa-solid fa-clock text-primary me-2"></i> Available Timeslots</label>
+                <div class="slot-grid" id="slotGrid">
+                  <!-- Radio cards generated dynamically -->
+                </div>
+                <div class="alert alert-info border-0 p-3 mt-3 d-none text-center small" id="noSlotsMsg" style="border-radius: 12px;">
+                  No slots available. Please select another date.
+                </div>
+              </div>
+
+              <!-- Step 4: Symptoms -->
+              <div class="mb-4">
+                <label class="form-label text-muted small font-weight-bold"><i class="fa-solid fa-comment-medical text-primary me-2"></i> Briefly Describe Symptoms (Optional)</label>
+                <textarea name="symptoms" class="form-control form-med-control" rows="3" placeholder="Fever, cough, body ache for 2 days..."></textarea>
+              </div>
+
+              <div class="d-grid mt-4">
+                <button type="submit" id="bookBtn" class="btn btn-med-primary py-3" disabled>
+                  Confirm Reservation & Assign Token
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const deptSelect = document.getElementById('deptSelect');
+    const docSelect = document.getElementById('docSelect');
+    const dateInput = document.getElementById('dateInput');
+    const slotContainer = document.getElementById('slotContainer');
+    const slotGrid = document.getElementById('slotGrid');
+    const noSlotsMsg = document.getElementById('noSlotsMsg');
+    const bookBtn = document.getElementById('bookBtn');
+
+    // 1. Department Change: Fetch doctors
+    deptSelect.addEventListener('change', async () => {
+      const deptName = deptSelect.value;
+      
+      // Reset subsequent forms
+      docSelect.innerHTML = '<option value="" disabled selected>Loading doctors...</option>';
+      docSelect.disabled = true;
+      dateInput.disabled = true;
+      dateInput.value = '';
+      slotContainer.classList.add('d-none');
+      bookBtn.disabled = true;
+
+      try {
+        const response = await fetch(`/patient/get-doctors?deptName=${encodeURIComponent(deptName)}`);
+        const doctors = await response.json();
+
+        if (doctors.length === 0) {
+          docSelect.innerHTML = '<option value="" disabled selected>No doctors available in this department</option>';
+        } else {
+          docSelect.innerHTML = '<option value="" disabled selected>Select Doctor</option>';
+          doctors.forEach(doc => {
+            docSelect.innerHTML += `<option value="${doc._id}">${doc.name} (${doc.specialization})</option>`;
+          });
+          docSelect.disabled = false;
+        }
+      } catch (err) {
+        console.error('Error fetching doctors:', err);
+        docSelect.innerHTML = '<option value="" disabled selected>Error loading doctors</option>';
+      }
+    });
+
+    // 2. Doctor Change: Enable date picker
+    docSelect.addEventListener('change', () => {
+      dateInput.disabled = false;
+      dateInput.value = '';
+      slotContainer.classList.add('d-none');
+      bookBtn.disabled = true;
+    });
+
+    // 3. Date / Doctor Selection: Fetch available slots
+    const fetchSlots = async () => {
+      const docId = docSelect.value;
+      const dateVal = dateInput.value;
+      if (!docId || !dateVal) return;
+
+      slotGrid.innerHTML = '';
+      noSlotsMsg.classList.add('d-none');
+      slotContainer.classList.remove('d-none');
+      bookBtn.disabled = true;
+
+      try {
+        const response = await fetch(`/patient/get-slots?doctorId=${docId}&date=${dateVal}`);
+        const result = await response.json();
+
+        if (!result.available) {
+          // Doctor doesn't work today
+          noSlotsMsg.textContent = result.message || 'Doctor not available on this day.';
+          noSlotsMsg.classList.remove('d-none');
+          return;
+        }
+
+        if (result.slots.length === 0) {
+          noSlotsMsg.textContent = 'All slots booked for this day. Try another date.';
+          noSlotsMsg.classList.remove('d-none');
+          return;
+        }
+
+        // Render slots as beautiful radio-badge cards
+        result.slots.forEach(slot => {
+          const radioId = `slot_${slot.replace(':', '_')}`;
+          slotGrid.innerHTML += `
+            <div>
+              <input type="radio" name="timeSlot" value="${slot}" id="${radioId}" class="slot-radio" required onclick="enableBookBtn()">
+              <label for="${radioId}" class="slot-btn w-100">${slot}</label>
+            </div>
+          `;
+        });
+
+      } catch (err) {
+        console.error('Error fetching slots:', err);
+        noSlotsMsg.textContent = 'Error retrieving timeslots. Please try again.';
+        noSlotsMsg.classList.remove('d-none');
+      }
+    };
+
+    dateInput.addEventListener('change', fetchSlots);
+  });
+
+  function enableBookBtn() {
+    document.getElementById('bookBtn').disabled = false;
+  }
+</script>
+
+<%- include('../partials/footer') %>

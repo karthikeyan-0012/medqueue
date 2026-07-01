@@ -1,0 +1,89 @@
+<nav class="navbar navbar-expand-lg navbar-med fixed-top">
+  <div class="container">
+    <a class="navbar-brand text-gradient d-flex align-items-center" href="/">
+      <i class="fa-solid fa-hospital-user me-2 text-primary"></i>
+      <span>MedQueue</span>
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <% if (!user) { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/#services">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#features">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#departments">Departments</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#faq">FAQ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#contact">Contact</a>
+          </li>
+        <% } else if (user.role === 'patient') { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/patient/dashboard">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/patient/book">Book Appointment</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/patient/appointments">My Appointments</a>
+          </li>
+        <% } else if (user.role === 'doctor') { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/doctor/dashboard">Queue Panel</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/doctor/schedule">My Availability</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/doctor/history">Patient Records</a>
+          </li>
+        <% } else if (user.role === 'admin') { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/dashboard">Metrics Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/doctors">Manage Doctors</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/patients">Manage Patients</a>
+          </li>
+        <% } %>
+      </ul>
+      
+      <div class="d-flex align-items-center">
+        <% if (user) { %>
+          <span class="text-muted me-3 d-none d-md-inline">
+            Hello, <strong class="text-dark"><%= user.name %></strong> 
+            <span class="badge bg-primary-light text-primary border border-primary-subtle ms-1 text-capitalize"><%= user.role %></span>
+          </span>
+          <a href="/logout" class="btn btn-outline-danger border-2 px-3 py-2" style="border-radius: 10px; font-weight: 600;">
+            <i class="fa-solid fa-sign-out-alt me-1"></i> Logout
+          </a>
+        <% } else { %>
+          <div class="dropdown me-2">
+            <button class="btn btn-outline-primary border-2 dropdown-toggle px-3 py-2" type="button" id="loginDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 10px; font-weight: 600;">
+              <i class="fa-solid fa-user-md me-1"></i> Portal Access
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 mt-2" aria-labelledby="loginDropdown" style="border-radius: 12px; width: 220px;">
+              <li><h6 class="dropdown-header text-uppercase text-xs text-muted font-weight-bold">Select Dashboard</h6></li>
+              <li><a class="dropdown-item py-2 px-3 rounded-2" href="/login?role=patient"><i class="fa-solid fa-user me-2 text-primary"></i>Patient Dashboard</a></li>
+              <li><a class="dropdown-item py-2 px-3 rounded-2" href="/login?role=doctor"><i class="fa-solid fa-stethoscope me-2 text-success"></i>Doctor Dashboard</a></li>
+              <li><a class="dropdown-item py-2 px-3 rounded-2" href="/login?role=admin"><i class="fa-solid fa-user-shield me-2 text-danger"></i>Admin Terminal</a></li>
+            </ul>
+          </div>
+          <a href="/register" class="btn btn-med-primary px-3 py-2">
+            Patient Signup
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>
