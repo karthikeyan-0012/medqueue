@@ -14,8 +14,6 @@ const connectDB = async () => {
     return true;
   } catch (err) {
     console.log('MongoDB connection failed. Falling back to local file-based database...');
-    useMock = true;
-    return false;
   }
 };
 
