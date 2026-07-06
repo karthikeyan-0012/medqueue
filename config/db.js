@@ -6,7 +6,7 @@ let useMock = false;
 const connectDB = async () => {
   try {
     // Try to connect to real MongoDB
-    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/medqueue', {
+    const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/medqueue', {
       serverSelectionTimeoutMS: 2000
     });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
