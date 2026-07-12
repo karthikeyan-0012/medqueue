@@ -132,7 +132,7 @@
         } else {
           docSelect.innerHTML = '<option value="" disabled selected>Select Doctor</option>';
           doctors.forEach(doc => {
-            docSelect.innerHTML += `<option value="${doc._id}">${doc.name} (${doc.specialization})</option>`;
+            docSelect.innerHTML += `<option value="${doc._id}">${doc.name}</option>`;
           });
           docSelect.disabled = false;
         }
