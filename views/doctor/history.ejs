@@ -1,0 +1,266 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="portal-container">
+  <!-- Sidebar -->
+  <aside class="portal-sidebar shadow-sm">
+    <div class="text-center mb-4 pb-3 border-bottom">
+      <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold mx-auto mb-2 display-font" style="width: 54px; height: 54px; font-size: 1.3rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); background-color: var(--secondary) !important;">
+        Dr.
+      </div>
+      <h6 class="mb-0 text-dark font-weight-bold" style="letter-spacing:-0.02em; color: var(--secondary) !important;"><%= doctor.name %></h6>
+      <small class="text-muted" style="font-size:0.78rem;"><%= doctor.specialization %></small>
+    </div>
+    
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="/doctor/dashboard" class="sidebar-nav-link">
+          <i class="fa-solid fa-house-medical"></i> Queue Dashboard
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/doctor/schedule" class="sidebar-nav-link">
+          <i class="fa-solid fa-clock"></i> Schedule Planner
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/doctor/history" class="sidebar-nav-link active">
+          <i class="fa-solid fa-file-medical"></i> Consultation History
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Content -->
+  <main class="portal-content">
+    <div class="container-fluid p-0">
+      <div class="row mb-4">
+        <div class="col">
+          <h2 class="display-font text-dark mb-1 h3" style="color: var(--secondary) !important;">Consultation Logs</h2>
+          <p class="text-muted mb-0 small">Audit previous consultations, inspect symptoms, and review clinical histories.</p>
+        </div>
+      </div>
+
+      <div class="med-card bg-white">
+        <div class="mb-4 d-flex flex-wrap gap-2 justify-content-between align-items-center">
+          <input type="text" id="patientSearch" class="form-control form-med-control w-100 w-md-250" placeholder="Search patient name..." onkeyup="filterPatients()">
+          <span class="text-muted small font-weight-bold">Clinical Dossier Archive</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table med-table align-middle" id="historyTable">
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Date</th>
+                <th>Time Slot</th>
+                <th>Chief Symptoms</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (appointments.length === 0) { %>
+                <tr>
+                  <td colspan="8" class="text-center py-4 text-muted small">No patient files found.</td>
+                </tr>
+              <% } else { %>
+                <% appointments.forEach(appt => { %>
+                  <tr>
+                    <td class="font-weight-bold text-dark" style="color: var(--secondary) !important;"><%= appt.patientName %></td>
+                    <td><%= appt.patientAge %> Yrs</td>
+                    <td><%= appt.patientGender %></td>
+                    <td><%= appt.date %></td>
+                    <td><%= appt.timeSlot %></td>
+                    <td class="text-truncate" style="max-width: 170px;" title="<%= appt.symptoms %>">
+                      <%= appt.symptoms || 'General Clinical Review' %>
+                    </td>
+                    <td><span class="med-badge med-badge-<%= appt.status %>"><%= appt.status %></span></td>
+                    <td>
+                      <button class="btn btn-sm btn-med-secondary px-3" onclick="viewPatientDetails('<%= appt.patient %>')">
+                        <i class="fa-solid fa-folder-open me-1"></i> Patient File
+                      </button>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Modal Dialog: Patient Dossier -->
+<div class="modal fade" id="patientModal" tabindex="-1" aria-labelledby="patientModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <h5 class="modal-title font-weight-bold display-font text-dark" id="patientModalLabel" style="color: var(--secondary) !important;"><i class="fa-solid fa-folder-open text-primary me-2" style="color: var(--accent) !important;"></i> Patient Clinical Dossier</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Spinner Loader -->
+        <div id="modalLoader" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status" style="width: 2.5rem; height: 2.5rem; color: var(--accent) !important;"></div>
+          <p class="text-muted mt-3 mb-0 small">Retrieving records from archive...</p>
+        </div>
+
+        <!-- Modal Data -->
+        <div id="modalData" class="d-none">
+          <!-- Demographic Summary Card -->
+          <div class="border rounded-4 bg-light p-3 mb-4">
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <span class="text-muted d-block small" style="font-size:0.65rem; font-weight:700; tracking-wider">FULL NAME</span>
+                <strong class="text-dark small fs-6" id="detName" style="font-weight:700; color: var(--secondary) !important;"></strong>
+              </div>
+              <div class="col-sm-3 col-6">
+                <span class="text-muted d-block small" style="font-size:0.65rem; font-weight:700; tracking-wider">AGE</span>
+                <strong class="text-dark small fs-6" id="detAge" style="font-weight:700; color: var(--secondary) !important;"></strong>
+              </div>
+              <div class="col-sm-3 col-6">
+                <span class="text-muted d-block small" style="font-size:0.65rem; font-weight:700; tracking-wider">GENDER</span>
+                <strong class="text-dark small fs-6" id="detGender" style="font-weight:700; color: var(--secondary) !important;"></strong>
+              </div>
+              <div class="col-sm-6 border-top pt-2 mt-2">
+                <span class="text-muted d-block small" style="font-size:0.65rem; font-weight:700; tracking-wider">EMAIL ADDRESS</span>
+                <strong class="text-dark small" id="detEmail"></strong>
+              </div>
+              <div class="col-sm-6 border-top pt-2 mt-2">
+                <span class="text-muted d-block small" style="font-size:0.65rem; font-weight:700; tracking-wider">PHONE CONTACT</span>
+                <strong class="text-dark small" id="detPhone"></strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- History Table logs -->
+          <h6 class="text-dark font-weight-bold mb-3 border-bottom pb-2 small uppercase tracking-wider" style="color: var(--secondary) !important;">Consultation Logs Dossier</h6>
+          <div class="table-responsive" style="max-height: 240px; overflow-y: auto;">
+            <table class="table align-middle text-sm">
+              <thead>
+                <tr class="text-muted border-bottom small">
+                  <th>Date</th>
+                  <th>Slot Time</th>
+                  <th>Symptoms / Notes</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="detApptLogs">
+                <!-- Dynamically generated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-med-secondary px-4 py-2" data-bs-dismiss="modal">Close File</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  let modalInstance = null;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    modalInstance = new bootstrap.Modal(document.getElementById('patientModal'));
+  });
+
+  // Client search
+  function filterPatients() {
+    const input = document.getElementById('patientSearch');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('historyTable');
+    const tr = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < tr.length; i++) {
+      let match = false;
+      const tdName = tr[i].getElementsByTagName('td')[0];
+      const tdSymptoms = tr[i].getElementsByTagName('td')[5];
+      
+      if (tdName) {
+        const textName = tdName.textContent || tdName.innerText;
+        const textSymptoms = tdSymptoms ? (tdSymptoms.textContent || tdSymptoms.innerText) : '';
+        if (textName.toLowerCase().indexOf(filter) > -1 || textSymptoms.toLowerCase().indexOf(filter) > -1) {
+          match = true;
+        }
+      }
+      
+      if (match) {
+        tr[i].style.display = '';
+      } else {
+        if (tr[i].getElementsByTagName('td').length > 1) {
+          tr[i].style.display = 'none';
+        }
+      }
+    }
+  }
+
+  // Ajax Loader for patient record card
+  async function viewPatientDetails(patientId) {
+    modalInstance.show();
+    
+    const loader = document.getElementById('modalLoader');
+    const dataPanel = document.getElementById('modalData');
+    
+    loader.classList.remove('d-none');
+    dataPanel.classList.add('d-none');
+
+    try {
+      const response = await fetch(`/doctor/patient-history/${patientId}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        // Demographics
+        document.getElementById('detName').textContent = data.patient.name;
+        document.getElementById('detAge').textContent = data.patient.age + ' Yrs';
+        document.getElementById('detGender').textContent = data.patient.gender;
+        document.getElementById('detEmail').textContent = data.patient.email;
+        document.getElementById('detPhone').textContent = data.patient.phone;
+
+        // Appointment Logs
+        const logsContainer = document.getElementById('detApptLogs');
+        logsContainer.innerHTML = '';
+
+        if (data.appointments.length === 0) {
+          logsContainer.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-3 small">No previous visits logged</td></tr>';
+        } else {
+          data.appointments.forEach(appt => {
+            const badgeClass = appt.status === 'completed' ? 'bg-success-light text-success' 
+                             : appt.status === 'cancelled' || appt.status === 'rejected' ? 'bg-danger-light text-danger'
+                             : 'bg-warning-light text-warning';
+
+            logsContainer.innerHTML += `
+              <tr class="border-bottom border-light">
+                <td class="font-weight-bold text-dark small">${appt.date}</td>
+                <td class="small">${appt.timeSlot}</td>
+                <td class="text-muted small" style="max-width: 250px;">${appt.symptoms || 'Routine Review'}</td>
+                <td><span class="badge ${badgeClass} text-uppercase font-weight-bold" style="font-size:0.68rem; border-radius:10px;">${appt.status}</span></td>
+              </tr>
+            `;
+          });
+        }
+
+        // Show contents
+        loader.classList.add('d-none');
+        dataPanel.classList.remove('d-none');
+      } else {
+        alert('Failed to retrieve patient logs.');
+      }
+    } catch (err) {
+      console.error('Error fetching patient logs:', err);
+      alert('Error fetching patient records.');
+    }
+  }
+</script>
+
+<%- include('../partials/footer') %>

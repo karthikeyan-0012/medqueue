@@ -1,0 +1,195 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="portal-container">
+  <!-- Sidebar -->
+  <aside class="portal-sidebar shadow-sm">
+    <div class="text-center mb-4 pb-3 border-bottom">
+      <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold mx-auto mb-2 display-font" style="width: 54px; height: 54px; font-size: 1.3rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); background-color: var(--secondary) !important;">
+        <%= user.name.split(' ').map(n => n[0]).join('') %>
+      </div>
+      <h6 class="mb-0 text-dark font-weight-bold" style="letter-spacing:-0.02em; color: var(--secondary) !important;"><%= user.name %></h6>
+      <small class="text-muted" style="font-size:0.78rem;"><%= user.email %></small>
+    </div>
+    
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="/patient/dashboard" class="sidebar-nav-link">
+          <i class="fa-solid fa-columns"></i> Operations Deck
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/patient/book" class="sidebar-nav-link">
+          <i class="fa-solid fa-calendar-plus"></i> Book Consultation
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/patient/appointments" class="sidebar-nav-link active">
+          <i class="fa-solid fa-clock-history"></i> My Appointment History
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Content -->
+  <main class="portal-content">
+    <div class="container-fluid p-0">
+      <div class="row mb-4">
+        <div class="col">
+          <h2 class="display-font text-dark mb-1 h3" style="color: var(--secondary) !important;">My Consultations</h2>
+          <p class="text-muted mb-0 small">Audit upcoming slots, cancel active passes, or review your historical clinical records.</p>
+        </div>
+      </div>
+
+      <% if (success) { %>
+        <div class="alert border-0 p-3 mb-4 d-flex align-items-center small shadow-sm" role="alert" style="border-radius: var(--radius-md); background-color: var(--success-light); color: var(--success); font-weight: 600; border: 1px solid var(--success-border) !important;">
+          <i class="fa-solid fa-circle-check me-2"></i> <%= success %>
+        </div>
+      <% } %>
+
+      <!-- Section 1: Upcoming Consultations -->
+      <div class="med-card mb-5 bg-white">
+        <h5 class="text-dark font-weight-bold display-font border-bottom pb-3 mb-4 uppercase tracking-wider small" style="font-size:0.75rem; color: var(--secondary) !important;"><i class="fa-solid fa-hourglass-start text-primary me-2" style="color: var(--accent) !important;"></i> Upcoming Appointments</h5>
+        
+        <% if (upcoming.length === 0) { %>
+          <div class="text-center py-5 text-muted small">
+            <i class="fa-solid fa-calendar-xmark fs-3 mb-2 d-block text-muted"></i>
+            No upcoming consultations scheduled.
+          </div>
+        <% } else { %>
+          <div class="row g-4">
+            <% upcoming.forEach(appt => { %>
+              <div class="col-md-6 col-xl-4">
+                <div class="border rounded-4 p-3 bg-light shadow-sm position-relative d-flex flex-column h-100">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-white text-secondary border px-3 py-1.5 rounded-pill font-weight-bold" style="font-size:0.75rem; color: var(--accent) !important; border-color: var(--border) !important;">Token T-<%= appt.tokenNumber.toString().padStart(2, '0') %></span>
+                    <span class="med-badge med-badge-<%= appt.status %> small"><%= appt.status %></span>
+                  </div>
+                  
+                  <h6 class="text-dark font-weight-bold mb-1 fs-5" style="color: var(--secondary) !important;"><%= appt.doctorName %></h6>
+                  <small class="text-muted font-weight-bold d-block mb-3" style="font-size:0.78rem;"><i class="fa-solid fa-tag me-1 text-primary" style="color: var(--accent) !important;"></i> <%= appt.department %></small>
+                  
+                  <div class="row g-2 border-top border-bottom py-2.5 mb-3 bg-white px-2 rounded-3 border">
+                    <div class="col-6 border-end">
+                      <small class="text-muted d-block uppercase tracking-wider" style="font-size:0.65rem;">DATE</small>
+                      <strong class="text-dark small" style="color: var(--secondary) !important;"><%= appt.date %></strong>
+                    </div>
+                    <div class="col-6 ps-3">
+                      <small class="text-muted d-block uppercase tracking-wider" style="font-size:0.65rem;">TIME SLOT</small>
+                      <strong class="text-dark small" style="color: var(--secondary) !important;"><%= appt.timeSlot %></strong>
+                    </div>
+                  </div>
+
+                  <form action="/patient/cancel" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking? This will remove you from the queue state.');" class="mt-auto">
+                    <input type="hidden" name="appointmentId" value="<%= appt._id %>">
+                    <button type="submit" class="btn btn-med-secondary w-100 py-2.5 text-danger border-danger-subtle bg-danger-light" style="border-radius: var(--radius-md); font-weight: 700; font-size:0.85rem;">
+                      Cancel Reservation
+                    </button>
+                  </form>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Section 2: History Logs Table -->
+      <div class="med-card bg-white">
+        <h5 class="text-dark font-weight-bold display-font border-bottom pb-3 mb-4 uppercase tracking-wider small" style="font-size:0.75rem; color: var(--secondary) !important;"><i class="fa-solid fa-clock-history text-primary me-2" style="color: var(--accent) !important;"></i> Clinical Consultation History</h5>
+        
+        <div class="mb-4 d-flex flex-wrap gap-2 justify-content-between align-items-center">
+          <input type="text" id="historySearch" class="form-control form-med-control w-100 w-md-250" placeholder="Search doctor or status..." onkeyup="filterHistory()">
+          <span class="text-muted small font-weight-bold">History Archive</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table med-table align-middle" id="historyTable">
+            <thead>
+              <tr>
+                <th>Consultant</th>
+                <th>Department</th>
+                <th>Date</th>
+                <th>Time Slot</th>
+                <th>Token Pass</th>
+                <th>Consultation Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (history.length === 0) { %>
+                <tr>
+                  <td colspan="6" class="text-center py-4 text-muted small">No past consultations recorded.</td>
+                </tr>
+              <% } else { %>
+                <% history.forEach(appt => { %>
+                  <tr>
+                    <td class="font-weight-bold text-dark" style="color: var(--secondary) !important;"><%= appt.doctorName %></td>
+                    <td><%= appt.department %></td>
+                    <td><%= appt.date %></td>
+                    <td><%= appt.timeSlot %></td>
+                    <td><span class="badge bg-light text-secondary-emphasis border px-2.5 py-1.5" style="border-radius:6px; font-weight:700;">T-<%= appt.tokenNumber.toString().padStart(2, '0') %></span></td>
+                    <td>
+                      <span class="med-badge med-badge-<%= appt.status %>"><%= appt.status %></span>
+                      <% if (appt.status === 'rejected' && appt.rejectionReason) { %>
+                        <i class="fa-solid fa-circle-info text-muted ms-1 small" data-bs-toggle="tooltip" title="<%= appt.rejectionReason %>" style="cursor: pointer;"></i>
+                      <% } %>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  // Bootstrap tooltips activation
+  document.addEventListener('DOMContentLoaded', () => {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+  });
+
+  // Client side search filtering
+  function filterHistory() {
+    const input = document.getElementById('historySearch');
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById('historyTable');
+    const tr = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < tr.length; i++) {
+      let match = false;
+      const tdDoctor = tr[i].getElementsByTagName('td')[0];
+      const tdDept = tr[i].getElementsByTagName('td')[1];
+      const tdStatus = tr[i].getElementsByTagName('td')[5];
+      
+      if (tdDoctor && tdDept) {
+        const textDoc = tdDoctor.textContent || tdDoctor.innerText;
+        const textDept = tdDept.textContent || tdDept.innerText;
+        const textStatus = tdStatus ? (tdStatus.textContent || tdStatus.innerText) : '';
+        
+        if (
+          textDoc.toLowerCase().indexOf(filter) > -1 || 
+          textDept.toLowerCase().indexOf(filter) > -1 ||
+          textStatus.toLowerCase().indexOf(filter) > -1
+        ) {
+          match = true;
+        }
+      }
+      
+      if (match) {
+        tr[i].style.display = '';
+      } else {
+        if (tr[i].getElementsByTagName('td').length > 1) {
+          tr[i].style.display = 'none';
+        }
+      }
+    }
+  }
+</script>
+
+<%- include('../partials/footer') %>

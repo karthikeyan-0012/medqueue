@@ -1,0 +1,110 @@
+[
+  {
+    "name": "Dr. Emily Carter",
+    "email": "doc.cardio@medqueue.com",
+    "password": "$2a$10$eFMtWblRiPr3zelrrlsowOeL1F898hfmWQjsqCivLaaen1pmFYuOu",
+    "department": "Cardiology",
+    "specialization": "Interventional Cardiology",
+    "phone": "+1 555-0101",
+    "workingDays": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday"
+    ],
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "slotDuration": 15,
+    "breakStartTime": "13:00",
+    "breakEndTime": "14:00",
+    "status": "active",
+    "_id": "id_x9y5ywxli",
+    "createdAt": "2026-06-30T17:20:54.948Z"
+  },
+  {
+    "name": "Dr. Sarah Jenkins",
+    "email": "doc.pedia@medqueue.com",
+    "password": "$2a$10$eFMtWblRiPr3zelrrlsowOeL1F898hfmWQjsqCivLaaen1pmFYuOu",
+    "department": "Pediatrics",
+    "specialization": "Pediatric Care & Neonatologist",
+    "phone": "+1 555-0102",
+    "workingDays": [
+      "Monday",
+      "Wednesday",
+      "Friday"
+    ],
+    "startTime": "10:00",
+    "endTime": "16:00",
+    "slotDuration": 20,
+    "breakStartTime": "12:30",
+    "breakEndTime": "13:30",
+    "status": "active",
+    "_id": "id_b3m40dhv7",
+    "createdAt": "2026-06-30T17:20:54.949Z"
+  },
+  {
+    "name": "Dr. Robert Chen",
+    "email": "doc.general@medqueue.com",
+    "password": "$2a$10$eFMtWblRiPr3zelrrlsowOeL1F898hfmWQjsqCivLaaen1pmFYuOu",
+    "department": "General Medicine",
+    "specialization": "Family Medicine & Internal Care",
+    "phone": "+1 555-0103",
+    "workingDays": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "slotDuration": 15,
+    "breakStartTime": "13:00",
+    "breakEndTime": "14:00",
+    "status": "active",
+    "_id": "id_zfw5vsry9",
+    "createdAt": "2026-06-30T17:20:54.978Z"
+  },
+  {
+    "name": "Dr. James Wilson",
+    "email": "doc.ortho@medqueue.com",
+    "password": "$2a$10$eFMtWblRiPr3zelrrlsowOeL1F898hfmWQjsqCivLaaen1pmFYuOu",
+    "department": "Orthopedics",
+    "specialization": "Spine Specialist & Orthopedic Surgeon",
+    "phone": "+1 555-0104",
+    "workingDays": [
+      "Tuesday",
+      "Thursday",
+      "Friday"
+    ],
+    "startTime": "08:30",
+    "endTime": "16:30",
+    "slotDuration": 30,
+    "breakStartTime": "12:00",
+    "breakEndTime": "13:00",
+    "status": "active",
+    "_id": "id_ojghliujt",
+    "createdAt": "2026-06-30T17:20:54.982Z"
+  },
+  {
+    "name": "Dr. Lisa Adams",
+    "email": "doc.derma@medqueue.com",
+    "password": "$2a$10$eFMtWblRiPr3zelrrlsowOeL1F898hfmWQjsqCivLaaen1pmFYuOu",
+    "department": "Dermatology",
+    "specialization": "Clinical & Cosmetic Dermatology",
+    "phone": "+1 555-0105",
+    "workingDays": [
+      "Monday",
+      "Tuesday",
+      "Thursday"
+    ],
+    "startTime": "09:00",
+    "endTime": "15:00",
+    "slotDuration": 15,
+    "breakStartTime": "12:00",
+    "breakEndTime": "12:45",
+    "status": "active",
+    "_id": "id_osvuj5lwr",
+    "createdAt": "2026-06-30T17:20:54.985Z"
+  }
+]

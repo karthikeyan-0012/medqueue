@@ -1,0 +1,305 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="portal-container">
+  <!-- Sidebar -->
+  <aside class="portal-sidebar shadow-sm">
+    <div class="text-center mb-4 pb-3 border-bottom">
+      <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold mx-auto mb-2 display-font" style="width: 54px; height: 54px; font-size: 1.3rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); background-color: var(--secondary) !important;">
+        AD
+      </div>
+      <h6 class="mb-0 text-dark font-weight-bold" style="letter-spacing:-0.02em; color: var(--secondary) !important;">System Admin</h6>
+      <small class="text-muted" style="font-size:0.78rem;">Operations Console</small>
+    </div>
+    
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="/admin/dashboard" class="sidebar-nav-link active">
+          <i class="fa-solid fa-chart-pie"></i> Metrics Overview
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/admin/doctors" class="sidebar-nav-link">
+          <i class="fa-solid fa-user-doctor"></i> Doctor Directory
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/admin/patients" class="sidebar-nav-link">
+          <i class="fa-solid fa-hospital-user"></i> Patient Directory
+        </a>
+      </li>
+    </ul>
+    
+    <div class="mt-auto border-top pt-3 text-center">
+      <span class="text-muted small d-block">Intelligent Platform</span>
+      <span class="text-muted small d-block font-weight-bold" style="font-size:0.7rem; color: var(--accent);">MedQueue v1.5.0</span>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="portal-content">
+    <div class="container-fluid p-0">
+      
+      <!-- Top Title -->
+      <div class="row mb-4 align-items-center">
+        <div class="col">
+          <h2 class="display-font text-dark mb-1 h3" style="color: var(--secondary) !important;">Administrative Command Center</h2>
+          <p class="text-muted mb-0 small">Real-time clinical metrics, queue tracking trends, departmental workloads, and coordination volumes.</p>
+        </div>
+      </div>
+
+      <!-- Count Widgets Grid -->
+      <div class="row g-4 mb-5">
+        <div class="col-sm-6 col-xl-3">
+          <div class="med-card d-flex align-items-center border-start border-primary border-4 p-3 bg-white">
+            <div class="med-card-icon mb-0 me-3" style="width: 44px; height: 44px; border-radius: 10px; font-size:1.1rem; color: var(--accent); background: rgba(166, 124, 82, 0.05); border-color: rgba(166, 124, 82, 0.15) !important;">
+              <i class="fa-solid fa-hospital-user"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1 small font-weight-bold uppercase tracking-wider" style="font-size:0.68rem;">Total Patients</h6>
+              <h3 class="mb-0 text-dark font-weight-bold display-font" style="color: var(--secondary) !important;"><%= stats.totalPatients %></h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+          <div class="med-card d-flex align-items-center border-start border-success border-4 p-3 bg-white">
+            <div class="med-card-icon bg-success-light text-success mb-0 me-3" style="width: 44px; height: 44px; border-radius: 10px; font-size:1.1rem; border-color:var(--success-border) !important;">
+              <i class="fa-solid fa-user-doctor"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1 small font-weight-bold uppercase tracking-wider" style="font-size:0.68rem;">Clinical Staff</h6>
+              <h3 class="mb-0 text-dark font-weight-bold display-font" style="color: var(--secondary) !important;"><%= stats.totalDoctors %></h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+          <div class="med-card d-flex align-items-center border-start border-warning border-4 p-3 bg-white">
+            <div class="med-card-icon bg-warning-light text-warning mb-0 me-3" style="width: 44px; height: 44px; border-radius: 10px; font-size:1.1rem; border-color:var(--warning-border) !important;">
+              <i class="fa-solid fa-clipboard-list"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1 small font-weight-bold uppercase tracking-wider" style="font-size:0.68rem;">Today's Bookings</h6>
+              <h3 class="mb-0 text-dark font-weight-bold display-font" style="color: var(--secondary) !important;"><%= stats.todayCount %></h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+          <div class="med-card d-flex align-items-center border-start border-danger border-4 p-3 bg-white">
+            <div class="med-card-icon bg-danger-light text-danger mb-0 me-3" style="width: 44px; height: 44px; border-radius: 10px; font-size:1.1rem; border-color:var(--danger-border) !important;">
+              <i class="fa-solid fa-users-viewfinder"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1 small font-weight-bold uppercase tracking-wider" style="font-size:0.68rem;">Active Queues</h6>
+              <h3 class="mb-0 text-dark font-weight-bold display-font" style="color: var(--secondary) !important;"><%= stats.waitingCount %></h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts layout -->
+      <div class="row g-4">
+        <!-- 1. Appointments Line Chart -->
+        <div class="col-lg-8">
+          <div class="med-card p-4 h-100 bg-white">
+            <h6 class="text-dark font-weight-bold mb-4 display-font uppercase tracking-wider small" style="font-size:0.75rem; color: var(--secondary) !important;">Appointments Velocity Trend (Last 6 Days)</h6>
+            <div style="position: relative; height: 280px;">
+              <canvas id="appointmentsChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Status Pie Chart -->
+        <div class="col-lg-4">
+          <div class="med-card p-4 h-100 bg-white">
+            <h6 class="text-dark font-weight-bold mb-4 display-font uppercase tracking-wider small" style="font-size:0.75rem; color: var(--secondary) !important;">Consultation Status Share</h6>
+            <div style="position: relative; height: 280px; display: flex; align-items: center; justify-content: center;">
+              <canvas id="statusChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Department Doughnut Chart -->
+        <div class="col-lg-4">
+          <div class="med-card p-4 h-100 bg-white">
+            <h6 class="text-dark font-weight-bold mb-4 display-font uppercase tracking-wider small" style="font-size:0.75rem; color: var(--secondary) !important;">Departmental Distribution</h6>
+            <div style="position: relative; height: 280px; display: flex; align-items: center; justify-content: center;">
+              <canvas id="departmentChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Workload Horizontal Bar Chart -->
+        <div class="col-lg-8">
+          <div class="med-card p-4 h-100 bg-white">
+            <h6 class="text-dark font-weight-bold mb-4 display-font uppercase tracking-wider small" style="font-size:0.75rem; color: var(--secondary) !important;">Clinical Volume Workload (Completed Consultations)</h6>
+            <div style="position: relative; height: 280px;">
+              <canvas id="workloadChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Average Waiting Time per Doctor Bar Chart -->
+        <div class="col-12">
+          <div class="med-card p-4 bg-white">
+            <h6 class="text-dark font-weight-bold mb-4 display-font uppercase tracking-wider small" style="font-size:0.75rem; color: var(--secondary) !important;">Average Patient waiting times per doctor (Minutes)</h6>
+            <div style="position: relative; height: 280px;">
+              <canvas id="waitingTimeChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const response = await fetch('/admin/analytics');
+      const metrics = await response.json();
+
+      // Configure premium global defaults for Chart.js matching brand theme
+      Chart.defaults.font.family = "'Manrope', sans-serif";
+      Chart.defaults.font.size = 11;
+      Chart.defaults.color = '#5E5E5E';
+      Chart.defaults.plugins.tooltip.backgroundColor = '#12355B';
+      Chart.defaults.plugins.tooltip.padding = 12;
+      Chart.defaults.plugins.tooltip.cornerRadius = 10;
+      Chart.defaults.plugins.tooltip.titleFont = { size: 12, weight: 'bold', family: "'Manrope', sans-serif" };
+
+      // 1. Appointments Line Chart (Medical Blue & Deep Navy)
+      new Chart(document.getElementById('appointmentsChart'), {
+        type: 'line',
+        data: {
+          labels: metrics.appointmentsPerDay.labels,
+          datasets: [{
+            label: 'Bookings',
+            data: metrics.appointmentsPerDay.data,
+            borderColor: '#0F6CBD',
+            backgroundColor: 'rgba(15, 108, 189, 0.04)',
+            fill: true,
+            tension: 0.35,
+            borderWidth: 3,
+            pointBackgroundColor: '#0F6CBD',
+            pointHoverRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(17, 17, 17, 0.04)' }, border: { dash: [5, 5] }, ticks: { stepSize: 1 } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+
+      // 2. Status Distribution (Pie Chart with Brand palette hexes)
+      new Chart(document.getElementById('statusChart'), {
+        type: 'pie',
+        data: {
+          labels: metrics.statusDistribution.labels,
+          datasets: [{
+            data: metrics.statusDistribution.data,
+            backgroundColor: ['#1F6B42', '#C23B3B', '#C58A00', '#5E5E5E', '#0F6CBD'],
+            borderWidth: 3,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 10, padding: 15, font: { weight: 600 } } }
+          }
+        }
+      });
+
+      // 3. Department Distribution (Doughnut using Medical Blue, Navy, Bronze, Green, Amber)
+      new Chart(document.getElementById('departmentChart'), {
+        type: 'doughnut',
+        data: {
+          labels: metrics.departmentBreakdown.labels,
+          datasets: [{
+            data: metrics.departmentBreakdown.data,
+            backgroundColor: ['#0F6CBD', '#12355B', '#A67C52', '#1F6B42', '#C58A00', '#C23B3B'],
+            borderWidth: 3,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 10, padding: 15, font: { weight: 600 } } }
+          },
+          cutout: '72%'
+        }
+      });
+
+      // 4. Doctor Workload (Horizontal Bar Chart in Emerald Green)
+      new Chart(document.getElementById('workloadChart'), {
+        type: 'bar',
+        data: {
+          labels: metrics.doctorWorkload.labels,
+          datasets: [{
+            label: 'Completed Consultations',
+            data: metrics.doctorWorkload.data,
+            backgroundColor: 'rgba(31, 107, 66, 0.85)',
+            hoverBackgroundColor: '#1F6B42',
+            borderRadius: 6,
+            barThickness: 16
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { beginAtZero: true, grid: { color: 'rgba(17, 17, 17, 0.04)' }, border: { dash: [5, 5] }, ticks: { stepSize: 1 } },
+            y: { grid: { display: false } }
+          }
+        }
+      });
+
+      // 5. Waiting Times (Bar Chart in Amber)
+      new Chart(document.getElementById('waitingTimeChart'), {
+        type: 'bar',
+        data: {
+          labels: metrics.doctorWaitTimes.labels,
+          datasets: [{
+            label: 'Estimated Wait Time',
+            data: metrics.doctorWaitTimes.data,
+            backgroundColor: 'rgba(197, 138, 0, 0.85)',
+            hoverBackgroundColor: '#C58A00',
+            borderRadius: 6,
+            barThickness: 24
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(17, 17, 17, 0.04)' }, border: { dash: [5, 5] } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+
+    } catch (err) {
+      console.error('Error rendering dashboard analytics:', err);
+    }
+  });
+</script>
+
+<%- include('../partials/footer') %>

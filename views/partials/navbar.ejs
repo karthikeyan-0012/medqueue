@@ -1,0 +1,93 @@
+<nav class="navbar navbar-expand-lg navbar-med fixed-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="/">
+      <div class="bg-white border text-primary rounded-3 d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; border-color: var(--border) !important; box-shadow: var(--shadow-sm);">
+        <i class="fa-solid fa-notes-medical" style="font-size: 0.95rem; color: var(--accent);"></i>
+      </div>
+      <span class="display-font font-weight-bold" style="letter-spacing: -0.04em; font-size: 1.25rem;">MedQueue</span>
+    </a>
+    
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3">
+        <% if (!user) { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/#services">Services</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#features">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#departments">Specialties</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#faq">FAQ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#contact">Contact</a>
+          </li>
+        <% } else if (user.role === 'patient') { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/patient/dashboard"><i class="fa-solid fa-home me-1"></i> Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/patient/book"><i class="fa-solid fa-calendar-plus me-1"></i> Book Slot</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/patient/appointments"><i class="fa-solid fa-clipboard-list me-1"></i> My Visits</a>
+          </li>
+        <% } else if (user.role === 'doctor') { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/doctor/dashboard"><i class="fa-solid fa-stethoscope me-1"></i> Queue Deck</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/doctor/schedule"><i class="fa-solid fa-calendar-days me-1"></i> Availability</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/doctor/history"><i class="fa-solid fa-folder-open me-1"></i> Patient Records</a>
+          </li>
+        <% } else if (user.role === 'admin') { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/dashboard"><i class="fa-solid fa-chart-line me-1"></i> Analytics</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/doctors"><i class="fa-solid fa-user-md me-1"></i> Manage Doctors</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/patients"><i class="fa-solid fa-hospital-user me-1"></i> Manage Patients</a>
+          </li>
+        <% } %>
+      </ul>
+      
+      <div class="d-flex align-items-center gap-3">
+        <% if (user) { %>
+          <div class="text-muted d-none d-md-inline small font-weight-bold">
+            <span class="text-secondary"><%= user.name %></span> 
+            <span class="badge bg-light text-secondary border border-subtle ms-1 py-1.5 px-2.5 text-capitalize" style="border-radius:6px;"><%= user.role %></span>
+          </div>
+          <a href="/logout" class="btn btn-med-secondary px-3 py-2 text-danger border-danger-subtle" style="background: var(--danger-light);">
+            <i class="fa-solid fa-arrow-right-from-bracket me-1"></i> Sign Out
+          </a>
+        <% } else { %>
+          <div class="dropdown">
+            <button class="btn btn-med-secondary dropdown-toggle px-3 py-2" type="button" id="loginDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-solid fa-lock me-1"></i> Client Portals
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg p-2 mt-2" aria-labelledby="loginDropdown" style="border-radius: var(--radius-md); width: 220px; border: 1px solid var(--border) !important;">
+              <li><h6 class="dropdown-header text-uppercase text-xs text-muted font-weight-bold">Access Terminal</h6></li>
+              <li><a class="dropdown-item py-2 px-3 rounded-2" href="/login?role=patient"><i class="fa-solid fa-user me-2 text-primary"></i>Patient Portal</a></li>
+              <li><a class="dropdown-item py-2 px-3 rounded-2" href="/login?role=doctor"><i class="fa-solid fa-stethoscope me-2 text-success"></i>Doctor Console</a></li>
+              <li><a class="dropdown-item py-2 px-3 rounded-2" href="/login?role=admin"><i class="fa-solid fa-user-shield me-2 text-danger"></i>Admin Control</a></li>
+            </ul>
+          </div>
+          <a href="/register" class="btn btn-med-primary px-3 py-2">
+            Patient Signup
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>

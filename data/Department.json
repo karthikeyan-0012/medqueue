@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Cardiology",
+    "description": "Expert heart care, diagnostics, and cardiac rehabilitation services.",
+    "icon": "fa-heartbeat",
+    "_id": "id_d41ffpxz0",
+    "createdAt": "2026-06-30T17:20:54.940Z"
+  },
+  {
+    "name": "Pediatrics",
+    "description": "Comprehensive medical care for infants, children, and adolescents.",
+    "icon": "fa-baby",
+    "_id": "id_15034cvcu",
+    "createdAt": "2026-06-30T17:20:54.941Z"
+  },
+  {
+    "name": "General Medicine",
+    "description": "Primary healthcare, diagnosis, and treatment for everyday wellness.",
+    "icon": "fa-stethoscope",
+    "_id": "id_iyio80f4s",
+    "createdAt": "2026-06-30T17:20:54.943Z"
+  },
+  {
+    "name": "Orthopedics",
+    "description": "Advanced treatment for bones, joints, ligaments, tendons, and muscles.",
+    "icon": "fa-bone",
+    "_id": "id_bp22g0oh6",
+    "createdAt": "2026-06-30T17:20:54.944Z"
+  },
+  {
+    "name": "Dermatology",
+    "description": "Comprehensive skin, hair, and nail health treatments and therapies.",
+    "icon": "fa-hand-holding-medical",
+    "_id": "id_s6wojj9po",
+    "createdAt": "2026-06-30T17:20:54.946Z"
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "doctor": "id_zfw5vsry9",
+    "date": "2026-06-30",
+    "currentPatient": null,
+    "activeQueue": [
+      "id_n1194rcvf",
+      "id_aid3zdwsb",
+      "id_e0h6d2r7y",
+      "id_amxwv6vev"
+    ],
+    "completedPatients": [],
+    "skippedPatients": [],
+    "isPaused": false,
+    "_id": "id_xn444j6fo",
+    "createdAt": "2026-06-30T17:20:55.080Z"
+  }
+]

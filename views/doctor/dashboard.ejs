@@ -1,0 +1,355 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="portal-container">
+  <!-- Sidebar -->
+  <aside class="portal-sidebar shadow-sm">
+    <div class="text-center mb-4 pb-3 border-bottom">
+      <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold mx-auto mb-2 display-font" style="width: 54px; height: 54px; font-size: 1.3rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); background-color: var(--secondary) !important;">
+        Dr.
+      </div>
+      <h6 class="mb-0 text-dark font-weight-bold" style="letter-spacing:-0.02em; color: var(--secondary) !important;"><%= doctor.name %></h6>
+      <small class="text-muted" style="font-size:0.78rem;"><%= doctor.specialization %></small>
+    </div>
+    
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="/doctor/dashboard" class="sidebar-nav-link active">
+          <i class="fa-solid fa-house-medical"></i> Queue Dashboard
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/doctor/schedule" class="sidebar-nav-link">
+          <i class="fa-solid fa-clock"></i> Schedule Planner
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/doctor/history" class="sidebar-nav-link">
+          <i class="fa-solid fa-file-medical"></i> Consultation History
+        </a>
+      </li>
+    </ul>
+    
+    <div class="mt-auto border-top pt-3 text-center">
+      <span class="text-muted small d-block">Intelligent Platform</span>
+      <span class="text-muted small d-block font-weight-bold" style="font-size:0.7rem; color: var(--accent);">MedQueue v1.5.0</span>
+    </div>
+  </aside>
+
+  <!-- Content -->
+  <main class="portal-content">
+    <div class="container-fluid p-0">
+      
+      <!-- Top Title -->
+      <div class="row mb-4 align-items-center justify-content-between">
+        <div class="col">
+          <h2 class="display-font text-dark mb-1 h3" style="color: var(--secondary) !important;">Queue Control Panel</h2>
+          <p class="text-muted mb-0 small">Manage your consultation list, call tokens, prioritize emergencies, or pause workflows.</p>
+        </div>
+        <div class="col-auto">
+          <span class="d-flex align-items-center">
+            <span class="<%= queueState.isPaused ? 'pulse-indicator-warning' : 'pulse-indicator' %> me-2" id="livePulse"></span>
+            <small class="text-muted font-weight-bold" id="livePulseText" style="font-size:0.8rem;">
+              <%= queueState.isPaused ? 'Queue Paused (Break)' : 'Consultations Active' %>
+            </small>
+          </span>
+        </div>
+      </div>
+
+      <% if (success) { %>
+        <div class="alert border-0 p-3 mb-4 d-flex align-items-center small" role="alert" style="border-radius: var(--radius-md); background-color: var(--success-light); color: var(--success); font-weight: 600; border: 1px solid var(--success-border) !important;">
+          <i class="fa-solid fa-circle-check me-2"></i> <%= success %>
+        </div>
+      <% } %>
+
+      <!-- Count Widgets -->
+      <div class="row g-4 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="med-card d-flex align-items-center border-start border-primary border-4 p-3 bg-white">
+            <div class="med-card-icon mb-0 me-3" style="width: 44px; height: 44px; border-radius: 10px; font-size:1.1rem; color: var(--accent); background: rgba(166, 124, 82, 0.05); border-color: rgba(166, 124, 82, 0.15) !important;">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1 small font-weight-bold uppercase tracking-wider" style="font-size:0.68rem;">Today's Visits</h6>
+              <h3 class="mb-0 text-dark font-weight-bold display-font" id="statToday" style="color: var(--secondary) !important;"><%= stats.totalToday %></h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="med-card d-flex align-items-center border-start border-warning border-4 p-3 bg-white">
+            <div class="med-card-icon bg-warning-light text-warning mb-0 me-3" style="width: 44px; height: 44px; border-radius: 10px; font-size:1.1rem; border-color:var(--warning-border) !important;">
+              <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1 small font-weight-bold uppercase tracking-wider" style="font-size:0.68rem;">Patients Waiting</h6>
+              <h3 class="mb-0 text-dark font-weight-bold display-font" id="statWaiting" style="color: var(--secondary) !important;"><%= stats.waitingCount %></h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="med-card d-flex align-items-center border-start border-success border-4 p-3 bg-white">
+            <div class="med-card-icon bg-success-light text-success mb-0 me-3" style="width: 44px; height: 44px; border-radius: 10px; font-size:1.1rem; border-color:var(--success-border) !important;">
+              <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1 small font-weight-bold uppercase tracking-wider" style="font-size:0.68rem;">Completed</h6>
+              <h3 class="mb-0 text-dark font-weight-bold display-font" id="statCompleted" style="color: var(--secondary) !important;"><%= stats.completedCount %></h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="med-card d-flex align-items-center border-start border-secondary border-4 p-3 bg-white">
+            <div class="med-card-icon bg-light text-secondary mb-0 me-3" style="width: 44px; height: 44px; border-radius: 10px; font-size:1.1rem;">
+              <i class="fa-solid fa-forward"></i>
+            </div>
+            <div>
+              <h6 class="text-muted mb-1 small font-weight-bold uppercase tracking-wider" style="font-size:0.68rem;">Skipped</h6>
+              <h3 class="mb-0 text-dark font-weight-bold display-font" id="statSkipped" style="color: var(--secondary) !important;"><%= stats.skippedCount %></h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Panels -->
+      <div class="row g-4">
+        <!-- Call deck & current patient -->
+        <div class="col-lg-5">
+          <!-- Current Patient Panel -->
+          <div class="med-card mb-4 border-2 border-primary bg-white p-4" style="background: linear-gradient(180deg, #ffffff 0%, rgba(15, 108, 189, 0.03) 100%);">
+            <h6 class="text-primary font-weight-bold display-font mb-3 uppercase tracking-wider small" style="font-size:0.7rem; color: var(--accent) !important;"><i class="fa-solid fa-stethoscope me-2"></i> Active Consultation</h6>
+            
+            <div id="currentPatientCard">
+              <% if (currentPatient) { %>
+                <div class="text-center py-2">
+                  <span class="badge text-white py-1.5 px-3 rounded-pill display-font fs-6 mb-3 font-weight-bold shadow-sm" style="background-color: var(--secondary) !important; border: 1px solid var(--accent);">Token T-<%= currentPatient.tokenNumber.toString().padStart(2, '0') %></span>
+                  <h4 class="text-dark font-weight-bold mb-1 display-font" style="letter-spacing:-0.02em; color: var(--secondary) !important;"><%= currentPatient.patientName %></h4>
+                  <p class="text-muted mb-3 small" style="font-weight:500;"><%= currentPatient.patientAge %> Yrs • <%= currentPatient.patientGender %></p>
+                  
+                  <div class="bg-white p-3 rounded-4 text-start border shadow-sm mb-4">
+                    <small class="text-muted font-weight-bold text-uppercase d-block mb-1" style="font-size:0.65rem; tracking-wider">Symptoms / Notes</small>
+                    <span class="text-dark small" style="font-weight:500;"><%= currentPatient.symptoms || 'General clinical review' %></span>
+                  </div>
+
+                  <div class="d-flex gap-2">
+                    <form action="/doctor/queue/complete" method="POST" class="flex-grow-1">
+                      <button type="submit" class="btn btn-success w-100 py-2.5 rounded-3 font-weight-bold small" style="font-size:0.85rem; border-radius: var(--radius-md); background-color: var(--success) !important;">
+                        <i class="fa-solid fa-circle-check me-1"></i> Complete
+                      </button>
+                    </form>
+                    
+                    <form action="/doctor/queue/skip" method="POST" class="flex-grow-1">
+                      <button type="submit" class="btn btn-outline-secondary w-100 py-2.5 rounded-3 font-weight-bold small" style="font-size:0.85rem; border-radius: var(--radius-md);">
+                        <i class="fa-solid fa-forward me-1"></i> Skip
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              <% } else { %>
+                <div class="text-center py-5 text-muted">
+                  <i class="fa-solid fa-clipboard-user fs-1 mb-3 d-block text-muted"></i>
+                  <h6 class="text-dark font-weight-bold mb-1" style="color: var(--secondary) !important;">Queue Calling Deck Idle</h6>
+                  <p class="small mb-0 px-2" style="line-height:1.5;">Click "Call Next Patient" to start consulting the next token in waitlist.</p>
+                </div>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Queue Controls card -->
+          <div class="med-card p-4 bg-white">
+            <h6 class="text-dark font-weight-bold mb-3 border-bottom pb-2 small uppercase tracking-wider" style="color: var(--secondary) !important;">Operations Hub</h6>
+            
+            <div class="d-grid gap-3">
+              <form action="/doctor/queue/call-next" method="POST">
+                <button type="submit" class="btn btn-med-primary w-100 py-3 d-flex align-items-center justify-content-center font-weight-bold" id="callNextBtn" style="background:var(--secondary); border-radius:var(--radius-md);" <%= queueState.activeQueue.length === 0 ? 'disabled' : '' %>>
+                  <i class="fa-solid fa-volume-high me-2"></i> Call Next Patient
+                </button>
+              </form>
+
+              <form action="/doctor/queue/toggle-break" method="POST">
+                <button type="submit" class="btn btn-med-secondary w-100 py-3 d-flex align-items-center justify-content-center text-warning border-warning-subtle font-weight-bold" id="breakBtn" style="background:var(--warning-light); border-radius:var(--radius-md);">
+                  <% if (queueState.isPaused) { %>
+                    <i class="fa-solid fa-play me-2"></i> Resume Consultations
+                  <% } else { %>
+                    <i class="fa-solid fa-pause me-2"></i> Schedule Short Break
+                  <% } %>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Waiting list grid -->
+        <div class="col-lg-7">
+          <div class="med-card h-100 bg-white">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+              <h5 class="text-dark font-weight-bold display-font mb-0 uppercase tracking-wider small" style="font-size:0.75rem; color: var(--secondary) !important;"><i class="fa-solid fa-users-line text-primary me-2" style="color: var(--accent) !important;"></i> Patient Waiting List</h5>
+              <span class="badge bg-warning-light text-warning border border-warning-subtle py-1.5 px-3 rounded-pill font-weight-bold" id="queueBadgeCount" style="font-size:0.72rem;"><%= activeQueue.length %> Waiting</span>
+            </div>
+
+            <div id="waitingListContainer">
+              <% if (activeQueue.length === 0) { %>
+                <div class="text-center py-5 text-muted small">
+                  <i class="fa-solid fa-folder-open fs-3 mb-2 d-block text-muted"></i>
+                  No patients waiting in queue today.
+                </div>
+              <% } else { %>
+                <div class="d-grid gap-3" id="waitingCards">
+                  <% activeQueue.forEach((patient, idx) => { %>
+                    <div class="border rounded-4 p-3 bg-light shadow-sm position-relative d-flex justify-content-between align-items-center">
+                      <div class="d-flex align-items-start">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold me-3 font-display border border-primary-subtle" style="width: 40px; height: 40px; flex-shrink: 0; font-size:0.95rem; background-color: var(--secondary) !important;">
+                          <%= patient.tokenNumber %>
+                        </div>
+                        <div>
+                          <h6 class="text-dark font-weight-bold mb-1 small" style="font-size:0.92rem; color: var(--secondary) !important;"><%= patient.patientName %></h6>
+                          <small class="text-muted d-block small mb-1" style="font-size:0.78rem; font-weight:500;">Age: <%= patient.patientAge %> • Slot: <%= patient.timeSlot %></small>
+                          <small class="text-muted d-block small" style="font-size:0.78rem;"><strong>Notes:</strong> <%= patient.symptoms || 'Routine clinic consult' %></small>
+                        </div>
+                      </div>
+                      <div class="text-end ms-3">
+                        <span class="badge bg-white text-muted border mb-2 d-block small" style="font-size:0.7rem; font-weight:700;">Pos #<%= idx + 1 %></span>
+                        <% if (!patient.isEmergency) { %>
+                          <form action="/doctor/queue/emergency" method="POST">
+                            <input type="hidden" name="appointmentId" value="<%= patient._id %>">
+                            <button type="submit" class="btn btn-outline-danger btn-sm border-2 font-weight-bold py-1 px-2.5" style="border-radius: 8px; font-size:0.72rem; background:var(--danger-light);">
+                              <i class="fa-solid fa-circle-exclamation me-1"></i> Priority
+                            </button>
+                          </form>
+                        <% } else { %>
+                          <span class="med-badge med-badge-emergency py-1 px-2.5 rounded-3" style="font-size:0.68rem;"><i class="fa-solid fa-circle-exclamation"></i> Emergency</span>
+                        <% } %>
+                      </div>
+                    </div>
+                  <% }) %>
+                </div>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Socket.IO dynamic synchronization script -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const socket = io();
+    const doctorId = '<%= user.id %>';
+
+    // Join room
+    socket.emit('joinQueue', { doctorId });
+
+    socket.on('queueUpdated', (data) => {
+      // Data contains: isPaused, currentPatient, activeQueue, slotDuration
+      
+      // 1. Update pulse indicators
+      const livePulse = document.getElementById('livePulse');
+      const livePulseText = document.getElementById('livePulseText');
+      const breakBtn = document.getElementById('breakBtn');
+
+      if (data.isPaused) {
+        livePulse.className = 'pulse-indicator-warning me-2';
+        livePulseText.textContent = 'Queue Paused (Break)';
+        breakBtn.innerHTML = '<i class="fa-solid fa-play me-2"></i> Resume Consultations';
+      } else {
+        livePulse.className = 'pulse-indicator me-2';
+        livePulseText.textContent = 'Consultations Active';
+        breakBtn.innerHTML = '<i class="fa-solid fa-pause me-2"></i> Schedule Short Break';
+      }
+
+      // 2. Update stats and counters
+      document.getElementById('statWaiting').textContent = data.activeQueue.length;
+      document.getElementById('queueBadgeCount').textContent = data.activeQueue.length + ' Waiting';
+      
+      const callNextBtn = document.getElementById('callNextBtn');
+      callNextBtn.disabled = data.activeQueue.length === 0;
+
+      // 3. Redraw Current Patient Panel
+      const currentPatientCard = document.getElementById('currentPatientCard');
+      if (data.currentPatient) {
+        const tokenNum = String(data.currentPatient.tokenNumber).padStart(2, '0');
+        currentPatientCard.innerHTML = `
+          <div class="text-center py-2">
+            <span class="badge text-white py-1.5 px-3 rounded-pill display-font fs-6 mb-3 font-weight-bold shadow-sm" style="background-color: var(--secondary) !important; border: 1px solid var(--accent);">Token T-\${tokenNum}</span>
+            <h4 class="text-dark font-weight-bold mb-1 display-font" style="letter-spacing:-0.02em; color: var(--secondary) !important;">\${data.currentPatient.patientName}</h4>
+            <p class="text-muted mb-3 small" style="font-weight:500;">\${data.currentPatient.patientAge} Yrs</p>
+            
+            <div class="bg-white p-3 rounded-4 text-start border shadow-sm mb-4">
+              <small class="text-muted font-weight-bold text-uppercase d-block mb-1" style="font-size:0.65rem; tracking-wider">Symptoms / Notes</small>
+              <span class="text-dark small" style="font-weight:500;">\${data.currentPatient.symptoms || 'General clinical review'}</span>
+            </div>
+
+            <div class="d-flex gap-2">
+              <form action="/doctor/queue/complete" method="POST" class="flex-grow-1">
+                <button type="submit" class="btn btn-success w-100 py-2.5 rounded-3 font-weight-bold small" style="font-size:0.85rem; border-radius: var(--radius-md); background-color: var(--success) !important;">
+                  <i class="fa-solid fa-circle-check me-1"></i> Complete
+                </button>
+              </form>
+              
+              <form action="/doctor/queue/skip" method="POST" class="flex-grow-1">
+                <button type="submit" class="btn btn-outline-secondary w-100 py-2.5 rounded-3 font-weight-bold small" style="font-size:0.85rem; border-radius: var(--radius-md);">
+                  <i class="fa-solid fa-forward me-1"></i> Skip
+                </button>
+              </form>
+            </div>
+          </div>
+        `;
+      } else {
+        currentPatientCard.innerHTML = `
+          <div class="text-center py-5 text-muted">
+            <i class="fa-solid fa-clipboard-user fs-1 mb-3 d-block text-muted"></i>
+            <h6 class="text-dark font-weight-bold mb-1" style="color: var(--secondary) !important;">Queue Calling Deck Idle</h6>
+            <p class="small mb-0 px-2" style="line-height:1.5;">Click "Call Next Patient" to start consulting the next token in waitlist.</p>
+          </div>
+        `;
+      }
+
+      // 4. Redraw Waiting Cards List
+      const waitingListContainer = document.getElementById('waitingListContainer');
+      if (data.activeQueue.length === 0) {
+        waitingListContainer.innerHTML = `
+          <div class="text-center py-5 text-muted small">
+            <i class="fa-solid fa-folder-open fs-3 mb-2 d-block text-muted"></i>
+            No patients waiting in queue today.
+          </div>
+        `;
+      } else {
+        let cardsHtml = '<div class="d-grid gap-3" id="waitingCards">';
+        data.activeQueue.forEach((patient, idx) => {
+          const badgeHtml = patient.isEmergency 
+            ? `<span class="med-badge med-badge-emergency py-1 px-2.5 rounded-3" style="font-size:0.68rem;"><i class="fa-solid fa-circle-exclamation"></i> Emergency</span>`
+            : `<form action="/doctor/queue/emergency" method="POST">
+                 <input type="hidden" name="appointmentId" value="\${patient._id}">
+                 <button type="submit" class="btn btn-outline-danger btn-sm border-2 font-weight-bold py-1 px-2.5" style="border-radius: 8px; font-size:0.72rem; background:var(--danger-light);">
+                   <i class="fa-solid fa-circle-exclamation me-1"></i> Priority
+                 </button>
+               </form>`;
+
+          cardsHtml += `
+            <div class="border rounded-4 p-3 bg-light shadow-sm position-relative d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-start">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold me-3 font-display border border-primary-subtle" style="width: 40px; height: 40px; flex-shrink: 0; font-size:0.95rem; background-color: var(--secondary) !important;">
+                  \${patient.tokenNumber}
+                </div>
+                <div>
+                  <h6 class="text-dark font-weight-bold mb-1 small" style="font-size:0.92rem; color: var(--secondary) !important;">\${patient.patientName}</h6>
+                  <small class="text-muted d-block small mb-1" style="font-size:0.78rem; font-weight:500;">Age: \${patient.patientAge} • Slot: \${patient.timeSlot}</small>
+                  <small class="text-muted d-block small" style="font-size:0.78rem;"><strong>Notes:</strong> \${patient.symptoms || 'Routine clinic consult'}</small>
+                </div>
+              </div>
+              <div class="text-end ms-3">
+                <span class="badge bg-white text-muted border mb-2 d-block small" style="font-size:0.7rem; font-weight:700;">Pos #\${idx + 1}</span>
+                \${badgeHtml}
+              </div>
+            </div>
+          `;
+        });
+        cardsHtml += '</div>';
+        waitingListContainer.innerHTML = cardsHtml;
+      }
+    });
+  });
+</script>
+
+<%- include('../partials/footer') %>

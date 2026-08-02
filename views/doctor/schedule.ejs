@@ -1,0 +1,123 @@
+<%- include('../partials/header') %>
+<%- include('../partials/navbar') %>
+
+<div class="portal-container">
+  <!-- Sidebar -->
+  <aside class="portal-sidebar shadow-sm">
+    <div class="text-center mb-4 pb-3 border-bottom">
+      <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center font-weight-bold mx-auto mb-2 display-font" style="width: 54px; height: 54px; font-size: 1.3rem; border: 2px solid var(--border); box-shadow: var(--shadow-sm); background-color: var(--secondary) !important;">
+        Dr.
+      </div>
+      <h6 class="mb-0 text-dark font-weight-bold" style="letter-spacing:-0.02em; color: var(--secondary) !important;"><%= doctor.name %></h6>
+      <small class="text-muted" style="font-size:0.78rem;"><%= doctor.specialization %></small>
+    </div>
+    
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">
+        <a href="/doctor/dashboard" class="sidebar-nav-link">
+          <i class="fa-solid fa-house-medical"></i> Queue Dashboard
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/doctor/schedule" class="sidebar-nav-link active">
+          <i class="fa-solid fa-clock"></i> Schedule Planner
+        </a>
+      </li>
+      <li class="sidebar-nav-item">
+        <a href="/doctor/history" class="sidebar-nav-link">
+          <i class="fa-solid fa-file-medical"></i> Consultation History
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Content -->
+  <main class="portal-content">
+    <div class="container-fluid p-0">
+      <div class="row mb-4">
+        <div class="col">
+          <h2 class="display-font text-dark mb-1 h3" style="color: var(--secondary) !important;">Availability Planner</h2>
+          <p class="text-muted mb-0 small">Configure your clinical consultation hours, slot durations, and recurring breaks.</p>
+        </div>
+      </div>
+
+      <% if (success) { %>
+        <div class="alert border-0 p-3 mb-4 d-flex align-items-center small shadow-sm" role="alert" style="border-radius: var(--radius-md); background-color: var(--success-light); color: var(--success); font-weight: 600; border: 1px solid var(--success-border) !important;">
+          <i class="fa-solid fa-circle-check me-2"></i> <%= success %>
+        </div>
+      <% } %>
+
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="med-card shadow-sm p-4 bg-white">
+            <form action="/doctor/schedule" method="POST">
+              
+              <!-- Consulting Workdays -->
+              <div class="mb-4">
+                <label class="form-label text-muted small font-weight-bold d-block mb-3 uppercase tracking-wider" style="font-size:0.7rem;">
+                  <i class="fa-solid fa-calendar-days text-primary me-2" style="color: var(--accent) !important;"></i> Consulting Workdays
+                </label>
+                <div class="row g-3">
+                  <% const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; %>
+                  <% days.forEach(day => { %>
+                    <div class="col-6 col-md-3">
+                      <div class="border rounded-3 p-3 bg-light d-flex align-items-center">
+                        <input type="checkbox" name="workingDays" value="<%= day %>" id="day_<%= day %>" class="form-check-input me-3 border-secondary cursor-pointer" <%= doctor.workingDays.includes(day) ? 'checked' : '' %>>
+                        <label for="day_<%= day %>" class="form-check-label text-dark font-weight-bold select-none cursor-pointer small" style="font-size:0.85rem;"><%= day %></label>
+                      </div>
+                    </div>
+                  <% }) %>
+                </div>
+              </div>
+
+              <!-- Time windows -->
+              <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                  <label class="form-label text-muted small font-weight-bold uppercase tracking-wider" style="font-size:0.7rem;"><i class="fa-solid fa-clock text-primary me-2" style="color: var(--accent) !important;"></i> Shift Start Time</label>
+                  <input type="time" name="startTime" class="form-control form-med-control w-100" value="<%= doctor.startTime %>" required>
+                </div>
+                
+                <div class="col-md-6">
+                  <label class="form-label text-muted small font-weight-bold uppercase tracking-wider" style="font-size:0.7rem;"><i class="fa-solid fa-clock text-primary me-2" style="color: var(--accent) !important;"></i> Shift End Time</label>
+                  <input type="time" name="endTime" class="form-control form-med-control w-100" value="<%= doctor.endTime %>" required>
+                </div>
+              </div>
+
+              <!-- Durations and Breaks -->
+              <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                  <label class="form-label text-muted small font-weight-bold uppercase tracking-wider" style="font-size:0.7rem;"><i class="fa-solid fa-stopwatch text-primary me-2" style="color: var(--accent) !important;"></i> Slot Duration</label>
+                  <select name="slotDuration" class="form-select form-med-control w-100" required style="height: 50px;">
+                    <option value="10" <%= doctor.slotDuration === 10 ? 'selected' : '' %>>10 Mins</option>
+                    <option value="15" <%= doctor.slotDuration === 15 ? 'selected' : '' %>>15 Mins</option>
+                    <option value="20" <%= doctor.slotDuration === 20 ? 'selected' : '' %>>20 Mins</option>
+                    <option value="30" <%= doctor.slotDuration === 30 ? 'selected' : '' %>>30 Mins</option>
+                    <option value="45" <%= doctor.slotDuration === 45 ? 'selected' : '' %>>45 Mins</option>
+                  </select>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label text-muted small font-weight-bold uppercase tracking-wider" style="font-size:0.7rem;"><i class="fa-solid fa-mug-hot text-primary me-2" style="color: var(--accent) !important;"></i> Break Start Time</label>
+                  <input type="time" name="breakStartTime" class="form-control form-med-control w-100" value="<%= doctor.breakStartTime %>" required>
+                </div>
+
+                <div class="col-md-4">
+                  <label class="form-label text-muted small font-weight-bold uppercase tracking-wider" style="font-size:0.7rem;"><i class="fa-solid fa-mug-hot text-primary me-2" style="color: var(--accent) !important;"></i> Break End Time</label>
+                  <input type="time" name="breakEndTime" class="form-control form-med-control w-100" value="<%= doctor.breakEndTime %>" required>
+                </div>
+              </div>
+
+              <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-med-primary py-3 w-100 font-weight-bold" style="background:var(--secondary); border-radius: var(--radius-md);">
+                  <i class="fa-solid fa-save me-2"></i> Save Schedule Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>
